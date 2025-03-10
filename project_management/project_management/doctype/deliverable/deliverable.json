@@ -1,0 +1,143 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-10 14:39:27.786321",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "deliverable_name",
+  "project",
+  "status",
+  "column_break_tvuh",
+  "due_date",
+  "priority",
+  "attachments",
+  "section_break_ugpg",
+  "description_for_this_deliverable",
+  "deliverable_image",
+  "section_break_faah",
+  "tasks",
+  "section_break_dcqt",
+  "submission_date",
+  "reviewed_by",
+  "approved_by",
+  "column_break_sbzz",
+  "changes_made"
+ ],
+ "fields": [
+  {
+   "fieldname": "deliverable_name",
+   "fieldtype": "Data",
+   "label": "Deliverable Name"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Draft\nAwaiting Client Review\nRequired Changes\nApproved"
+  },
+  {
+   "fieldname": "column_break_tvuh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Due Date"
+  },
+  {
+   "fieldname": "priority",
+   "fieldtype": "Select",
+   "label": "Priority",
+   "options": "Low\nMedium\nCritical"
+  },
+  {
+   "fieldname": "section_break_faah",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "tasks",
+   "fieldtype": "Table",
+   "label": "Tasks",
+   "options": "Deliverable Task"
+  },
+  {
+   "fieldname": "section_break_dcqt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "submission_date",
+   "fieldtype": "Date",
+   "label": "Submission Date",
+   "options": "Today()"
+  },
+  {
+   "fieldname": "reviewed_by",
+   "fieldtype": "Data",
+   "label": "Reviewed By"
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Data",
+   "label": "Approved By"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "Attach",
+   "label": "Attachments"
+  },
+  {
+   "fieldname": "column_break_sbzz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "changes_made",
+   "fieldtype": "Small Text",
+   "label": "Changes Made"
+  },
+  {
+   "fieldname": "section_break_ugpg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description_for_this_deliverable",
+   "fieldtype": "Text",
+   "label": "Description for this Deliverable"
+  },
+  {
+   "fieldname": "deliverable_image",
+   "fieldtype": "Attach Image",
+   "label": "Deliverable Image"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-10 15:27:12.517804",
+ "modified_by": "Administrator",
+ "module": "Project Management",
+ "name": "Deliverable",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
