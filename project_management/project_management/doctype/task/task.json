@@ -14,13 +14,13 @@
   "start_date",
   "end_date",
   "section_break_iq12",
+  "assigned_to",
   "status",
   "priority",
-  "time_in_hours",
   "column_break_2oqk",
+  "time_in_hours",
   "progress_",
   "document",
-  "client",
   "lft",
   "rgt",
   "is_group",
@@ -99,11 +99,6 @@
    "label": "Document"
   },
   {
-   "fieldname": "client",
-   "fieldtype": "Data",
-   "label": "Client"
-  },
-  {
    "fieldname": "lft",
    "fieldtype": "Int",
    "hidden": 1,
@@ -137,12 +132,18 @@
    "ignore_user_permissions": 1,
    "label": "Parent Task",
    "options": "Task"
+  },
+  {
+   "fieldname": "assigned_to",
+   "fieldtype": "Link",
+   "label": "Assigned to",
+   "options": "User"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-03-10 12:15:01.475391",
+ "modified": "2025-03-10 14:17:43.827314",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Task",
