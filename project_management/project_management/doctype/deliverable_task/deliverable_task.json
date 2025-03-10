@@ -28,6 +28,7 @@
    "fetch_from": "task.assigned_to",
    "fieldname": "assigned_to",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Assigned To"
   },
   {
@@ -40,7 +41,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-10 14:22:30.946935",
+ "modified": "2025-03-10 14:55:00.895478",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Deliverable Task",
