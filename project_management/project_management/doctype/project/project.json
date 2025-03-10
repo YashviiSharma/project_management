@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "naming_series:naming_series",
  "creation": "2025-03-10 10:47:42.541716",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -106,11 +106,12 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-10 11:00:42.569930",
+ "modified": "2025-03-10 11:46:19.594819",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Project",
  "naming_rule": "By \"Naming Series\" field",
+ "nsm_parent_field": "parent_project",
  "owner": "Administrator",
  "permissions": [
   {
@@ -126,7 +127,9 @@
    "write": 1
   }
  ],
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "project_name"
 }
