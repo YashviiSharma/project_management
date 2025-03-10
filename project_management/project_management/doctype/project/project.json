@@ -20,7 +20,11 @@
   "client_details_section",
   "client",
   "column_break_ycdk",
-  "email"
+  "email",
+  "section_break_bbzp",
+  "team_member",
+  "description_section",
+  "description"
  ],
  "fields": [
   {
@@ -90,23 +94,46 @@
   },
   {
    "fieldname": "client",
-   "fieldtype": "Data",
-   "label": "Client"
+   "fieldtype": "Link",
+   "label": "Client",
+   "options": "User"
   },
   {
    "fieldname": "column_break_ycdk",
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "client.email",
    "fieldname": "email",
    "fieldtype": "Data",
    "label": "Email",
    "options": "Email"
+  },
+  {
+   "fieldname": "section_break_bbzp",
+   "fieldtype": "Section Break",
+   "label": "Team Member"
+  },
+  {
+   "fieldname": "team_member",
+   "fieldtype": "Table",
+   "label": "Team Member",
+   "options": "Team Member"
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Project Detail"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "label": "Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-10 11:46:19.594819",
+ "modified": "2025-03-10 13:04:46.367460",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Project",
