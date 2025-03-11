@@ -23,8 +23,9 @@
   },
   {
    "fieldname": "deliverable",
-   "fieldtype": "Data",
-   "label": "Deliverable"
+   "fieldtype": "Link",
+   "label": "Deliverable",
+   "options": "Deliverable"
   },
   {
    "fieldname": "status",
@@ -67,7 +68,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-10 15:23:54.041868",
+ "modified": "2025-03-10 15:38:02.509405",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Client Feedback",
