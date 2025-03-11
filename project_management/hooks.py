@@ -8,6 +8,8 @@ app_license = "mit"
 # Apps
 # ------------------
 
+after_migrate = "project_management.project_management.add_role.create_roles"
+
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page

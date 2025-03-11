@@ -28,7 +28,9 @@
   {
    "fieldname": "deliverable_name",
    "fieldtype": "Data",
-   "label": "Deliverable Name"
+   "in_list_view": 1,
+   "label": "Deliverable Name",
+   "reqd": 1
   },
   {
    "fieldname": "project",
@@ -59,7 +61,8 @@
   },
   {
    "fieldname": "section_break_faah",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Tasks"
   },
   {
    "fieldname": "tasks",
@@ -103,12 +106,13 @@
   },
   {
    "fieldname": "section_break_ugpg",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Description for this Deliverable"
   },
   {
    "fieldname": "description_for_this_deliverable",
    "fieldtype": "Text",
-   "label": "Description for this Deliverable"
+   "label": "Description "
   },
   {
    "fieldname": "deliverable_image",
@@ -118,7 +122,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-10 15:27:12.517804",
+ "modified": "2025-03-11 09:52:33.645281",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Deliverable",
