@@ -20,8 +20,9 @@ def create_roles():
             })
             doc.insert(ignore_permissions=True)
             print(f"✅ Role '{role}' created successfully.")
-            # Assign roles to Administrator user
-            assign_roles_to_admin(roles.keys())
+            
+    # Assign roles to Administrator user
+    assign_roles_to_admin(roles.keys())
 
 
 def assign_roles_to_admin(roles):
