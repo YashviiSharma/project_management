@@ -1,0 +1,35 @@
+{
+ "attach_print": 0,
+ "channel": "Email",
+ "creation": "2025-03-12 16:31:12.946334",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Project",
+ "enabled": 1,
+ "event": "New",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "<p>Add your message here</p>\n",
+ "message_type": "Markdown",
+ "modified": "2025-03-12 16:42:15.618659",
+ "modified_by": "Administrator",
+ "module": "Project Management",
+ "name": "Added in Project",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_document_field": "email,team_member",
+   "receiver_by_role": "Team Member"
+  },
+  {
+   "receiver_by_document_field": "email,team_member",
+   "receiver_by_role": "Vendor"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 0,
+ "sender": "Project Management",
+ "sender_email": "projectmanagementfrappe@gmail.com",
+ "subject": "You have been added in the Project"
+}
