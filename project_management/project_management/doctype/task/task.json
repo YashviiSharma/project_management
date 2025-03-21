@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "naming_series:naming_series",
+ "autoname": "field:task_name",
  "creation": "2025-03-10 11:13:40.389206",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -45,7 +45,8 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Task Name",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "project",
@@ -147,11 +148,11 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-03-11 10:41:47.959273",
+ "modified": "2025-03-20 16:15:54.537150",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Task",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "By fieldname",
  "nsm_parent_field": "parent_task",
  "owner": "Administrator",
  "permissions": [
