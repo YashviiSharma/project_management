@@ -10,7 +10,16 @@
   "full_name",
   "email",
   "column_break_txjq",
-  "is_vender"
+  "is_vender",
+  "test",
+  "test1",
+  "test2",
+  "test3",
+  "test4",
+  "test5",
+  "test6",
+  "test7",
+  "test8"
  ],
  "fields": [
   {
@@ -45,12 +54,57 @@
    "fieldtype": "Check",
    "in_list_view": 1,
    "label": "is Vender?"
+  },
+  {
+   "fieldname": "test",
+   "fieldtype": "Data",
+   "label": "test"
+  },
+  {
+   "fieldname": "test1",
+   "fieldtype": "Data",
+   "label": "test1"
+  },
+  {
+   "fieldname": "test2",
+   "fieldtype": "Data",
+   "label": "test2"
+  },
+  {
+   "fieldname": "test3",
+   "fieldtype": "Data",
+   "label": "test3"
+  },
+  {
+   "fieldname": "test4",
+   "fieldtype": "Data",
+   "label": "test4"
+  },
+  {
+   "fieldname": "test5",
+   "fieldtype": "Data",
+   "label": "test5"
+  },
+  {
+   "fieldname": "test6",
+   "fieldtype": "Data",
+   "label": "test6"
+  },
+  {
+   "fieldname": "test7",
+   "fieldtype": "Data",
+   "label": "test7"
+  },
+  {
+   "fieldname": "test8",
+   "fieldtype": "Data",
+   "label": "test8"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-10 12:52:55.796035",
+ "modified": "2025-03-24 16:05:40.926867",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Team Member",
