@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "DEL-.####",
  "creation": "2025-03-10 14:39:27.786321",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -122,10 +123,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-11 09:52:33.645281",
+ "modified": "2025-03-21 12:47:08.142470",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Deliverable",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
