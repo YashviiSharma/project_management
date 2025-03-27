@@ -1,0 +1,37 @@
+{
+ "based_on": "creation",
+ "chart_name": "Task Activity",
+ "chart_type": "Count",
+ "color": "#39E4A5",
+ "creation": "2025-03-27 11:09:38.978242",
+ "currency": "INR",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "document_type": "Task",
+ "dynamic_filters_json": "[]",
+ "filters_json": "[]",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "modified": "2025-03-27 11:09:48.350438",
+ "modified_by": "jenny@gmail.com",
+ "module": "Project Management",
+ "name": "Task Activity",
+ "number_of_groups": 0,
+ "owner": "jenny@gmail.com",
+ "parent_document_type": "",
+ "roles": [
+  {
+   "role": "Project Manager"
+  }
+ ],
+ "source": "",
+ "time_interval": "Weekly",
+ "timeseries": 1,
+ "timespan": "Last Year",
+ "type": "Line",
+ "use_report_chart": 0,
+ "value_based_on": "",
+ "y_axis": []
+}
