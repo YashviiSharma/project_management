@@ -24,7 +24,9 @@
   "rgt",
   "is_group",
   "old_parent",
-  "parent_task"
+  "parent_task",
+  "section_break_jtrs",
+  "description"
  ],
  "fields": [
   {
@@ -80,7 +82,8 @@
   {
    "fieldname": "time_in_hours",
    "fieldtype": "Float",
-   "label": "Time (in Hours)"
+   "label": "Time (in Hours)",
+   "precision": "2"
   },
   {
    "fieldname": "column_break_2oqk",
@@ -136,12 +139,22 @@
    "fieldtype": "Link",
    "label": "Assigned to",
    "options": "User"
+  },
+  {
+   "fieldname": "section_break_jtrs",
+   "fieldtype": "Section Break",
+   "label": "Task Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "label": "Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-03-26 10:20:44.107942",
+ "modified": "2025-03-29 15:36:26.786917",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Task",

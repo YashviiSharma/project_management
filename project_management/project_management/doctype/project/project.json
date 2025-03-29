@@ -16,7 +16,7 @@
   "end_date",
   "time_in_hours",
   "progress",
-  "documents",
+  "document",
   "client_details_section",
   "client",
   "column_break_ycdk",
@@ -65,7 +65,8 @@
   {
    "fieldname": "start_date",
    "fieldtype": "Date",
-   "label": "Start Date"
+   "label": "Start Date",
+   "options": "today()"
   },
   {
    "fieldname": "end_date",
@@ -81,11 +82,6 @@
    "fieldname": "progress",
    "fieldtype": "Percent",
    "label": "Progress"
-  },
-  {
-   "fieldname": "documents",
-   "fieldtype": "Attach",
-   "label": "Documents"
   },
   {
    "fieldname": "client_details_section",
@@ -129,11 +125,16 @@
    "fieldname": "description",
    "fieldtype": "Text",
    "label": "Description"
+  },
+  {
+   "fieldname": "document",
+   "fieldtype": "Attach",
+   "label": "Project Document"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-10 13:04:46.367460",
+ "modified": "2025-03-29 15:13:16.908393",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Project",

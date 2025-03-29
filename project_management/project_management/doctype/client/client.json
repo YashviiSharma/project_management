@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:client",
  "creation": "2025-03-19 05:47:10.543971",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -18,7 +19,8 @@
    "fieldname": "client",
    "fieldtype": "Link",
    "label": "Client",
-   "options": "User"
+   "options": "User",
+   "unique": 1
   },
   {
    "fieldname": "client_details_section",
@@ -57,10 +59,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-19 05:52:33.051371",
+ "modified": "2025-03-29 18:23:38.141125",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Client",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
