@@ -11,6 +11,7 @@
   "status",
   "project_type",
   "priority",
+  "raven_channel",
   "column_break_uvzh",
   "start_date",
   "end_date",
@@ -135,11 +136,17 @@
    "fieldname": "document",
    "fieldtype": "Attach",
    "label": "Project Document"
+  },
+  {
+   "fieldname": "raven_channel",
+   "fieldtype": "Link",
+   "label": "Raven Channel",
+   "options": "Raven Channel"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-29 21:43:08.051649",
+ "modified": "2025-03-30 22:16:09.146764",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Project",

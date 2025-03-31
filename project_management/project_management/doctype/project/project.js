@@ -5,8 +5,32 @@ frappe.ui.form.on('Project', {
     refresh: function(frm) {
         setupTaskButton(frm);
         setupDeliverableButton(frm);
+        setupChannelButton(frm);
     }
 });
+
+function setupChannelButton(frm) {
+    if (frm.doc.raven_channel) {
+        frm.add_custom_button(__('Open Channel'), function() {
+            frappe.call({
+                method: 'frappe.client.get_value',
+                args: {
+                    doctype: 'Raven Channel',
+                    filters: {name: frm.doc.raven_channel},
+                    fieldname: 'name'
+                },
+                callback: function(response) {
+                    if (response.message) {
+                        const workspace_name = frm.doc.raven_channel.split('-')[0];
+                        window.open(`/raven/${encodeURIComponent(workspace_name)}/${encodeURIComponent(frm.doc.raven_channel)}`, '_blank');
+                    } else {
+                        frappe.msgprint(__('Channel not found'), __('Error'));
+                    }
+                }
+            });
+        },);
+    }
+}
 
 function setupTaskButton(frm) {
     frm.add_custom_button(__('Add Task'), () => showAddTaskDialog(frm));
