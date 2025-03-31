@@ -19,14 +19,22 @@ def get_assigned_tasks():
 
     return tasks
 
-
 @frappe.whitelist()
-def update_task_status(task_name, status):
-    task = frappe.get_doc("Task", task_name)
-    task.status = status
-    task.save()
-    frappe.db.commit()
-    return "Task Updated"
+def update_task_status(task_name, status):  
+    try:
+        task = frappe.get_doc("Task", {"task_name": task_name})  
+        task.status = status
+        
+        # Ensure the priority is High if it should be listed in personal tasks
+        if status == "In Progress":  
+            task.priority = "High"  
+
+        task.save()
+        frappe.db.commit()
+        return "success"
+    except Exception as e:
+        frappe.log_error(f"Task Update Error: {str(e)}", "Task Status Update")
+        return "error"
 
 @frappe.whitelist()
 def get_personal_tasks():
@@ -52,17 +60,29 @@ def get_task_status_chart():
 
 @frappe.whitelist()
 def get_task_progress_chart():
-    user_email = frappe.db.get_value("User", frappe.session.user, "email")
+    user = frappe.session.user
+    user_email = frappe.db.get_value("User", user, "email")
 
     data = frappe.db.sql("""
-        SELECT t.task_name, t.progress_
-        FROM `tabTask` t
-        WHERE t.assigned_to = %s
-    """, (user_email,), as_dict=True)
+        SELECT name, task_name, progress_
+        FROM `tabTask`
+        WHERE assigned_to IN (%s, %s) AND status IN ('In Progress', 'Open')
+    """, (user, user_email), as_dict=True)
 
-    frappe.logger().info(f"Task Progress Data: {data}")  # Debugging Log
+    frappe.logger().info(f"Task Progress Data: {data}")
 
     return {
         "labels": [d["task_name"] for d in data], 
         "datasets": [{"values": [d["progress_"] for d in data]}]
     }
+
+@frappe.whitelist()
+def delete_task(task_name):
+    try:
+        task = frappe.get_doc("Task", {"task_name": task_name})  # Fetch task by name
+        task.delete()  # Delete the task
+        frappe.db.commit()
+        return "success"
+    except Exception as e:
+        frappe.log_error(f"Task Deletion Error: {str(e)}", "Task Deletion")
+        return "error"

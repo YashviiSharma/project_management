@@ -8,7 +8,6 @@ def execute(filters=None):
 
     frappe.msgprint(f"🔹 DEBUG: Fetching data from {start_date}")
 
-    # Fetch All Tasks (Completed, Pending, and Cancelled)
     all_tasks = frappe.db.sql("""
         SELECT t.task_name, t.project, t.assigned_to, t.start_date, t.end_date, t.status, t.creation, t.modified
         FROM `tabTask` t
@@ -16,7 +15,6 @@ def execute(filters=None):
         ORDER BY t.modified DESC
     """, (start_date,), as_dict=True)
 
-    # Fetch Project Progress Updates
     project_updates = frappe.db.sql("""
         SELECT p.name AS project_id, p.project_name, p.progress, p.modified
         FROM `tabProject` p
@@ -24,14 +22,12 @@ def execute(filters=None):
         ORDER BY p.modified DESC
     """, (start_date,), as_dict=True)
 
-    # Debugging: Check if project_updates has data
     frappe.msgprint(f"🔹 DEBUG: Project Updates: {project_updates}")
 
     if not all_tasks and not project_updates:
         frappe.msgprint("⚠️ No recent data found in the last 7 days.")
         return [], [], [], {}
 
-    # Add Status Symbols for Tasks
     for task in all_tasks:
         if task["status"] == "Completed":
             task["status"] = "🟢 Completed"
@@ -40,7 +36,6 @@ def execute(filters=None):
         else:
             task["status"] = "🟡 Pending"
 
-    # Table Columns
     columns = [
         {"label": "Task Name", "fieldname": "task_name", "fieldtype": "Data", "width": 250},
         {"label": "Project", "fieldname": "project", "fieldtype": "Link", "options": "Project", "width": 150},
@@ -50,33 +45,31 @@ def execute(filters=None):
         {"label": "Status", "fieldname": "status", "fieldtype": "Data", "width": 120},
     ]
 
-    # Ensure project_updates contains data before using it
     if project_updates:
         labels = [p["project_name"] for p in project_updates]  # Project names for labels
         values = [p["progress"] for p in project_updates]  # Progress percentage
     else:
         labels, values = [], []  # Avoid errors if no data is available
 
-    # Project Progress Bar Chart with Narrower Bars
     progress_chart = {
         "data": {
-            "labels": labels,  # Project names as labels
+            "labels": labels,  
             "datasets": [
                 {
                     "name": "Progress (%)",
                     "values": values,
-                    "chartType": "bar",  # Bar Chart
-                    "color": "#36A2EB"  # Blue bars
+                    "chartType": "bar",  
+                    "color": "#36A2EB"  
                 }
             ],
         },
-        "type": "bar",  # Bar chart
+        "type": "bar",  
         "title": "Project Progress Overview",
-        "height": 300,  # Adjust height as needed
+        "height": 300, 
         "barOptions": {
-            "spaceRatio": 0.8  # Adjusts bar width (Lower value = narrower bars)
+            "spaceRatio": 0.8  
         }
     }
 
-    return columns, all_tasks, None, progress_chart  # Now returns Bar Chart with Narrower Bars
+    return columns, all_tasks, None, progress_chart  
 
