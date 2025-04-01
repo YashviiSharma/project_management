@@ -8,7 +8,7 @@ app_license = "mit"
 # Apps
 # ------------------
 
-after_migrate = "project_management.project_management.add_role.create_roles"
+after_migrate = "project_management.utils.add_role.create_roles"
 
 # required_apps = []
 
@@ -139,13 +139,13 @@ after_migrate = "project_management.project_management.add_role.create_roles"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+    "User": {
+        "after_insert": "project_management.utils.user_sync.create_raven_user",
+        "on_update": "project_management.utils.user_sync.update_raven_user",
+        "on_trash": "project_management.utils.user_sync.delete_raven_user"
+    }
+}
 
 # Scheduled Tasks
 # ---------------
