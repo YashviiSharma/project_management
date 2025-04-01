@@ -13,6 +13,13 @@ const routes = [
     path: '/account/login',
     component: () => import('@/pages/Login.vue'),
   },
+  // Client routes
+  {
+    path: '/client/dashboard',
+    name: 'ClientDashboard',
+    component: () => import('@/pages/client/ClientDashboard.vue'),
+    // meta: { requiresAuth: true, requiredRole: 'Client' }
+  },
 ]
 
 let router = createRouter({
