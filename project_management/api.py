@@ -86,3 +86,118 @@ def delete_task(task_name):
     except Exception as e:
         frappe.log_error(f"Task Deletion Error: {str(e)}", "Task Deletion")
         return "error"
+    
+@frappe.whitelist()
+def get_client_projects():
+    """
+    Get projects associated with the current logged-in client user
+    """
+    user = frappe.session.user
+    
+    # Query for projects where the current user is the client
+    projects = frappe.get_all(
+        "Project",
+        filters={"client": user},
+        fields=["name", "project_name", "status", "project_type", "progress", 
+                "start_date", "end_date", "raven_channel"]
+    )
+    
+    return projects
+
+@frappe.whitelist()
+def get_client_deliverables(projects):
+    """
+    Get pending deliverables for the client's projects
+    """
+    if not projects:
+        return []
+    
+    # Ensure the user has access to these projects
+    user = frappe.session.user
+    
+    # For security, filter to only include projects where the user is the client
+    authorized_projects = frappe.get_all(
+        "Project",
+        filters={"client": user, "name": ["in", projects]},
+        pluck="name"
+    )
+    
+    if not authorized_projects:
+        return []
+    
+    # Get pending deliverables for authorized projects
+    deliverables = frappe.get_all(
+        "Deliverable",
+        filters={
+            "project": ["in", authorized_projects],
+            "status": ["in", ["Awaiting Client Review"]]
+        },
+        fields=["name", "deliverable_name", "project", "status", "due_date", "document"]
+    )
+    
+    return deliverables
+
+@frappe.whitelist()
+def get_client_dashboard_stats(projects):
+    """
+    Get dashboard stats for the client
+    """
+    if not projects:
+        return {
+            "active_projects": 0,
+            "pending_deliverables": 0,
+            "completed_projects": 0
+        }
+    
+    # Ensure the user has access to these projects
+    user = frappe.session.user
+    
+    # For security, filter to only include projects where the user is the client
+    authorized_projects = frappe.get_all(
+        "Project",
+        filters={"client": user, "name": ["in", projects]},
+        pluck="name"
+    )
+    
+    if not authorized_projects:
+        return {
+            "active_projects": 0,
+            "pending_deliverables": 0,
+            "completed_projects": 0
+        }
+    
+    # Count active projects
+    active_projects = frappe.get_all(
+        "Project",
+        filters={
+            "name": ["in", authorized_projects],
+            "status": ["in", ["Planned", "In Progress", "On Hold"]]
+        },
+        as_list=True
+    )
+    
+    # Count pending deliverables
+    pending_deliverables = frappe.get_all(
+        "Deliverable",
+        filters={
+            "project": ["in", authorized_projects],
+            "status": ["in", ["Awaiting Client Review"]]
+        },
+        as_list=True
+    )
+    
+    # Count completed projects
+    completed_projects = frappe.get_all(
+        "Project",
+        filters={
+            "name": ["in", authorized_projects],
+            "status": "Completed"
+        },
+        as_list=True
+    )
+    
+    return {
+        "active_projects": len(active_projects),
+        "pending_deliverables": len(pending_deliverables),
+        "completed_projects": len(completed_projects)    
+    }
