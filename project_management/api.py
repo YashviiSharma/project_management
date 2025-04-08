@@ -94,7 +94,6 @@ def get_client_projects():
     """
     user = frappe.session.user
     
-    # Query for projects where the current user is the client
     projects = frappe.get_all(
         "Project",
         filters={"client": user},
@@ -112,10 +111,8 @@ def get_client_deliverables(projects):
     if not projects:
         return []
     
-    # Ensure the user has access to these projects
     user = frappe.session.user
     
-    # For security, filter to only include projects where the user is the client
     authorized_projects = frappe.get_all(
         "Project",
         filters={"client": user, "name": ["in", projects]},
@@ -125,12 +122,10 @@ def get_client_deliverables(projects):
     if not authorized_projects:
         return []
     
-    # Get pending deliverables for authorized projects
     deliverables = frappe.get_all(
         "Deliverable",
         filters={
             "project": ["in", authorized_projects],
-            "status": ["in", ["Awaiting Client Review"]]
         },
         fields=["name", "deliverable_name", "project", "status", "due_date", "document"]
     )
@@ -149,10 +144,8 @@ def get_client_dashboard_stats(projects):
             "completed_projects": 0
         }
     
-    # Ensure the user has access to these projects
     user = frappe.session.user
     
-    # For security, filter to only include projects where the user is the client
     authorized_projects = frappe.get_all(
         "Project",
         filters={"client": user, "name": ["in", projects]},
@@ -166,7 +159,6 @@ def get_client_dashboard_stats(projects):
             "completed_projects": 0
         }
     
-    # Count active projects
     active_projects = frappe.get_all(
         "Project",
         filters={
@@ -176,7 +168,6 @@ def get_client_dashboard_stats(projects):
         as_list=True
     )
     
-    # Count pending deliverables
     pending_deliverables = frappe.get_all(
         "Deliverable",
         filters={
@@ -186,7 +177,6 @@ def get_client_dashboard_stats(projects):
         as_list=True
     )
     
-    # Count completed projects
     completed_projects = frappe.get_all(
         "Project",
         filters={
@@ -201,3 +191,198 @@ def get_client_dashboard_stats(projects):
         "pending_deliverables": len(pending_deliverables),
         "completed_projects": len(completed_projects)    
     }
+
+@frappe.whitelist()
+def submit_deliverable_review(deliverable, comment, action):
+    """
+    Submit client review for a deliverable and update workflow state
+    """
+    try:
+        user = frappe.session.user
+        deliverable_doc = frappe.get_doc("Deliverable", deliverable)
+        project = frappe.get_doc("Project", deliverable_doc.project)
+        
+        if project.client != user:
+            return {"status": "error", "message": "You don't have permission to review this deliverable"}
+        
+        workflow_action = action  
+        
+        # Get workflow transitions
+        workflow = frappe.get_doc("Workflow", {"document_type": "Deliverable", "is_active": 1})
+        transition = next(
+            (t for t in workflow.transitions 
+             if t.state == deliverable_doc.workflow_state and t.action == workflow_action),
+            None
+        )
+        
+        if not transition:
+            return {
+                "status": "error", 
+                "message": f"Cannot perform action '{action}' from current state '{deliverable_doc.workflow_state}'"
+            }
+        
+        deliverable_doc.workflow_state = transition.next_state
+        
+        state_doc = next(
+            (s for s in workflow.states 
+             if s.state == transition.next_state),
+            None
+        )
+        
+        if state_doc and state_doc.update_field == "status":
+            deliverable_doc.status = state_doc.update_value
+        
+        deliverable_doc.save(ignore_permissions=True)
+        
+        if comment:
+            content = f"Client Review ({action}): {comment}"
+        else:
+            content = f"Client Review ({action}): <i>{user} updated the status to {action}</i>"
+
+        comment_doc = frappe.get_doc({
+            "doctype": "Comment",
+            "comment_type": "Comment",
+            "reference_doctype": "Deliverable",
+            "reference_name": deliverable,
+            "content": content,
+            "comment_by": user
+        })
+        comment_doc.insert(ignore_permissions=True)
+
+        frappe.logger().info(f"Client {user} reviewed deliverable {deliverable} as {action}")
+        
+        return {
+            "status": "success", 
+            "message": f"Deliverable successfully {action.lower()}ed",
+            "deliverable": deliverable_doc.name
+        }
+        
+    except Exception as e:
+        frappe.log_error(f"Deliverable Review Error: {str(e)}", "Deliverable Review")
+        return {
+            "status": "error", 
+            "message": f"Error submitting review: {str(e)}"
+        }
+    
+@frappe.whitelist()
+def get_project_team_members(projects):
+    """
+    Get all team members working on the client's projects
+    """
+    if isinstance(projects, str):
+        import json
+        try:
+            parsed_data = json.loads(projects)
+            if isinstance(parsed_data, list):
+                projects = parsed_data
+            elif isinstance(parsed_data, dict) and 'projects' in parsed_data:
+                projects = parsed_data['projects']
+            else:
+                projects = [projects]
+        except json.JSONDecodeError:
+            projects = [projects]
+    elif isinstance(projects, dict) and 'projects' in projects:
+        projects = projects['projects']
+        
+    if not projects:
+        return {"members": [], "project_members": {}}
+    
+    user = frappe.session.user
+    
+    authorized_projects = frappe.get_all(
+        "Project",
+        filters={"client": user, "name": ["in", projects]},
+        pluck="name"
+    )
+    
+    if not authorized_projects:
+        return {"members": [], "project_members": {}}
+    
+    project_members = {}
+    members = set()
+    
+    for project in authorized_projects:
+        try:
+            project_doc = frappe.get_doc("Project", project)
+            
+            project_team = []
+            if hasattr(project_doc, 'team_member') and project_doc.team_member:
+                project_team = [d.user for d in project_doc.team_member if d.user]
+            elif hasattr(project_doc, 'users') and project_doc.users:
+                project_team = [d.user for d in project_doc.users if d.user]
+            
+            tasks = frappe.get_all("Task", filters={"project": project}, fields=["name", "assigned_to"])
+            task_members = [t.assigned_to for t in tasks if t.assigned_to]
+            
+            all_members = list(set(project_team + task_members))
+            
+            all_members = [m for m in all_members if m]
+            
+            project_members[project] = all_members
+            members.update(all_members)
+        except Exception as e:
+            frappe.log_error(f"Error processing project {project}: {str(e)}", 
+                           "Team Member Fetch Error")
+    
+    member_details = []
+    for member in members:
+        try:
+            user_doc = frappe.get_doc("User", member)
+            member_details.append({
+                "name": member,
+                "full_name": user_doc.full_name or user_doc.name,
+                "email": user_doc.email,
+                "mobile_no": user_doc.mobile_no if hasattr(user_doc, 'mobile_no') else None,
+                "designation": user_doc.designation if hasattr(user_doc, 'designation') else None,
+                "department": user_doc.department if hasattr(user_doc, 'department') else None
+            })
+        except Exception as e:
+            frappe.log_error(f"Error fetching team member details for {member}: {str(e)}", 
+                            "Team Member Fetch Error")
+    
+    return {
+        "members": member_details,
+        "project_members": project_members
+    }
+
+@frappe.whitelist()
+def get_client_project_details(project):
+    """
+    Get detailed information about a specific project for the client
+    
+    """
+    user = frappe.session.user
+    
+    authorized = frappe.db.exists(
+        "Project", 
+        {"name": project, "client": user}
+    )
+    
+    if not authorized:
+        frappe.logger().info(f"User {user} attempted to access unauthorized project {project}")
+        return None
+    
+    try:
+        project_doc = frappe.get_doc("Project", project)
+        
+        project_data = {
+            "name": project_doc.name,
+            "project_name": project_doc.project_name,
+            "status": project_doc.status,
+            "project_type": project_doc.project_type,
+            "priority": project_doc.priority,
+            "progress": project_doc.progress,
+            "start_date": project_doc.start_date,
+            "end_date": project_doc.end_date,
+            "description": project_doc.description,
+            "document": project_doc.document,
+            "raven_channel": project_doc.raven_channel,
+            "department": project_doc.get("department") if hasattr(project_doc, "department") else None
+        }
+        
+        return project_data
+        
+    except Exception as e:
+        frappe.log_error(f"Error fetching project details for {project}: {str(e)}", 
+                        "Project Details Fetch Error")
+        return None

@@ -1,28 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50 flex flex-col">
     <!-- Navigation Bar -->
-    <nav class="bg-blue-600 text-white shadow-lg">
-      <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-        <div class="flex items-center space-x-2">
-          <img src="../assets/logo.png" alt="Logo" class="h-8">
-          <span class="text-xl font-semibold">Project Management Portal</span>
-        </div>
-        
-        <div class="hidden md:flex space-x-6">
-          <router-link to="/client/dashboard" class="hover:text-blue-200">Dashboard</router-link>
-          <router-link to="/client/projects" class="hover:text-blue-200">My Projects</router-link>
-          <router-link to="/client/deliverables" class="hover:text-blue-200">Deliverables</router-link>
-          <router-link to="/client/team" class="hover:text-blue-200">Team Members</router-link>
-        </div>
-        
-        <div class="flex items-center space-x-4">
-          <span class="hidden sm:inline">Welcome, {{ userName }}</span>
-          <button @click="logout" class="bg-blue-700 hover:bg-blue-800 px-3 py-1 rounded">
-            Logout
-          </button>
-        </div>
-      </div>
-    </nav>
+    <NavBar :userName="userName" />
 
     <!-- Main Content -->
     <main class="flex-grow container mx-auto px-4 py-6">
@@ -131,13 +110,13 @@
           <p class="mt-2 text-gray-600">Loading deliverables...</p>
         </div>
         
-        <div v-else-if="deliverables.length === 0" class="text-center py-8">
-          <p class="text-gray-600">No pending deliverables found.</p>
+        <div v-else-if="awaitingReviewDeliverables.length === 0" class="text-center py-8">
+          <p class="text-gray-600">No pending deliverables requiring your review.</p>
         </div>
         
         <div v-else class="space-y-4">
           <div 
-            v-for="deliverable in deliverables" 
+            v-for="deliverable in awaitingReviewDeliverables" 
             :key="deliverable.name"
             class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition"
           >
@@ -164,7 +143,7 @@
                   @click="viewDeliverable(deliverable.name)"
                   class="text-blue-600 hover:text-blue-800 text-sm font-medium"
                 >
-                  Review
+                  View
                 </button>
                 <button 
                   @click="downloadDeliverable(deliverable)"
@@ -181,32 +160,24 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-6">
-      <div class="container mx-auto px-4">
-        <div class="flex flex-col md:flex-row justify-between items-center">
-          <div class="mb-4 md:mb-0">
-            <p>&copy; {{ currentYear }} Project Management System. All rights reserved.</p>
-          </div>
-          <div class="flex space-x-4">
-            <router-link to="/client/terms" class="hover:text-blue-300">Terms</router-link>
-            <router-link to="/client/privacy" class="hover:text-blue-300">Privacy</router-link>
-            <router-link to="/client/contact" class="hover:text-blue-300">Contact</router-link>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <FooterComponent />
   </div>
 </template>
 
 <script>
 import { session } from '@/data/session.js'
+import NavBar from '@/components/NavBar.vue'
+import FooterComponent from '@/components/Footer.vue'
 
 export default {
   name: 'ClientDashboard',
+  components: {
+    NavBar,
+    FooterComponent
+  },
   data() {
     return {
       session,
-      currentYear: new Date().getFullYear(),
       userName: '',
       userEmail: '',
       projects: [],
@@ -215,6 +186,12 @@ export default {
       loadingProjects: true,
       loadingDeliverables: true
     };
+  },
+  computed: {
+    // Filtered deliverables for dashboard that only show "Awaiting Client Review" status
+    awaitingReviewDeliverables() {
+      return this.deliverables.filter(d => d.status === 'Awaiting Client Review');
+    }
   },
   async mounted() {
     await this.getUserInfo();
@@ -280,7 +257,7 @@ export default {
     },
     
     viewDeliverable(deliverableId) {
-      this.$router.push(`/client/deliverables/${deliverableId}`);
+      this.$router.push(`/client/deliverables`);
     },
     
     openProjectChat(projectId) {
@@ -299,12 +276,6 @@ export default {
     
     goToNewProject() {
       this.$router.push('/client/projects/new');
-    },
-    
-    logout() {
-      this.session.logout.submit().then(() => {
-        this.$router.push('/login');
-      });
     },
     
     // Get user information
@@ -426,9 +397,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.router-link-active {
-  @apply text-blue-300 font-medium;
-}
-</style>

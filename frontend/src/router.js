@@ -20,6 +20,31 @@ const routes = [
     component: () => import('@/pages/client/ClientDashboard.vue'),
     // meta: { requiresAuth: true, requiredRole: 'Client' }
   },
+  {
+    path: '/client/projects',
+    name: 'ClientProjects',
+    component: () => import('@/pages/client/Project.vue'),
+    // meta: { requiresAuth: true, requiredRole: 'Client' }
+  },
+  {
+    path: '/client/deliverables',
+    name: 'ClientDeliverables',
+    component: () => import('@/pages/client/Deliverable.vue'),
+    // meta: { requiresAuth: true, requiredRole: 'Client' }
+  },
+  {
+    path: '/client/team',
+    name: 'ClientTeam',
+    component: () => import('@/pages/client/TeamMember.vue'),
+    // meta: { requiresAuth: true, requiredRole: 'Client' }
+  },
+  {
+    path: '/client/Projects/:id',
+    name: 'ClientProjectDetails',
+    component: () => import('@/pages/client/ProjectDetails.vue'),
+    // meta: { requiresAuth: true, requiredRole: 'Client' }
+  },
+
 ]
 
 let router = createRouter({
