@@ -2,7 +2,7 @@
     <nav class="bg-blue-600 text-white shadow-lg">
       <div class="container mx-auto px-4 py-3 flex justify-between items-center">
         <div class="flex items-center space-x-2">
-          <img src="../assets/logo.png" alt="Logo" class="h-8">
+          <img src="/public/logo.png" alt="Logo" class="h-8">
           <span class="text-xl font-semibold">Project Management Portal</span>
         </div>
         
