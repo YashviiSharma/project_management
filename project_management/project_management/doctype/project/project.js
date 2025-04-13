@@ -437,7 +437,7 @@ function createDeliverable(frm, values, deliverableDialog) {
                 project: frm.doc.name,
                 due_date: values.due_date,
                 priority: 'Medium',
-                status: 'Draft',
+                // status: 'In Progress',
                 description_for_this_deliverable: values.description
             }
         },

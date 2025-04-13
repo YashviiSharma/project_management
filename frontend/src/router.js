@@ -44,6 +44,32 @@ const routes = [
     component: () => import('@/pages/client/ProjectDetails.vue'),
     // meta: { requiresAuth: true, requiredRole: 'Client' }
   },
+  {
+    path: '/vendor/dashboard',
+    name: 'VendorDashboard',
+    component: () => import('@/pages/vendor/VendorDashboard.vue'),
+    // meta: { requiresAuth: true, requiredRole: 'Client' }
+  },
+  {
+    path: '/submit-deliverable',
+    name: 'SubmitDeliverable',
+    component: () => import('@/components/TaskTable.vue')
+  },
+  {
+    path: '/thank-you',
+    name: 'ThankYou',
+    component: () => import('@/pages/vendor/ThankYou.vue')
+  },
+  {
+    path: '/vendor/tasks',
+    name: 'Tasks',
+    component: () => import('@/components/TaskTable.vue'),
+  },
+  {
+    path: '/vendor/deliverables',
+    name: 'Deliverables',
+    component: () => import('@/pages/vendor/DeliverableTable.vue'), 
+  },
 
 ]
 
