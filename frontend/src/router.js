@@ -53,7 +53,7 @@ const routes = [
   {
     path: '/submit-deliverable',
     name: 'SubmitDeliverable',
-    component: () => import('@/components/TaskTable.vue')
+    component: () => import('@/pages/vendor/SubmitDeliverable.vue')
   },
   {
     path: '/thank-you',
