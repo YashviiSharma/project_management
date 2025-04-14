@@ -70,6 +70,11 @@ const routes = [
     name: 'Deliverables',
     component: () => import('@/pages/vendor/DeliverableTable.vue'), 
   },
+  {
+    path: '/vendor/task-detail/:name',
+    name: 'TaskDetails',
+    component: () => import('@/components/TaskDetails.vue')
+  }
 
 ]
 

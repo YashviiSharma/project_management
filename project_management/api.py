@@ -501,3 +501,13 @@ def submit_deliverable():
 	except Exception as e:
 		frappe.log_error(frappe.get_traceback(), "Submit Deliverable Error")
 		frappe.throw(_("Error: ") + str(e))
+
+@frappe.whitelist(allow_guest=True) 
+def get_single_task(task_name):
+    task = frappe.get_all('Task', filters={'name': task_name}, fields=[
+        'name', 'assigned_to', 'end_date', 'priority', 'status', 'progress_',
+        'description'])  
+    if task:
+        return task[0]  
+    else:
+        return {"message": "Task not found"} 
