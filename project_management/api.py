@@ -196,9 +196,6 @@ def get_client_dashboard_stats(projects):
 
 @frappe.whitelist()
 def submit_deliverable_review(deliverable, comment, action):
-	"""
-	Submit client review for a deliverable and update workflow state
-	"""
 	try:
 		user = frappe.session.user
 		deliverable_doc = frappe.get_doc("Deliverable", deliverable)
@@ -209,7 +206,6 @@ def submit_deliverable_review(deliverable, comment, action):
 		
 		workflow_action = action  
 		
-		# Get workflow transitions
 		workflow = frappe.get_doc("Workflow", {"document_type": "Deliverable", "is_active": 1})
 		transition = next(
 			(t for t in workflow.transitions 
@@ -255,7 +251,7 @@ def submit_deliverable_review(deliverable, comment, action):
 		
 		return {
 			"status": "success", 
-			"message": f"Deliverable successfully {action.lower()}ed",
+			"message": f"Client {user} reviewed deliverable {deliverable} as {action}",
 			"deliverable": deliverable_doc.name
 		}
 		
@@ -457,44 +453,61 @@ def get_pending_deliverables_for_vendor():
 
 @frappe.whitelist(allow_guest=False)
 def submit_deliverable():
-    try:
-        deliverable_name = frappe.form_dict.get("deliverable")
-        description = frappe.form_dict.get("description")
-        file = frappe.request.files.get("file")
+	try:
+		deliverable_name = frappe.form_dict.get("deliverable")
+		description = frappe.form_dict.get("description")
+		file = frappe.request.files.get("file")
 
-        if not deliverable_name:
-            frappe.throw(_("Deliverable name is required"))
+		if not deliverable_name:
+			frappe.throw(_("Deliverable name is required"))
 
-        doc = frappe.get_doc("Deliverable", deliverable_name)
+		doc = frappe.get_doc("Deliverable", deliverable_name)
 
-        if description:
-            doc.description = description
+		if description:
+			doc.description = description
 
-        if file:
-            saved_file = save_file(
-                fname=file.filename,
-                content=file.stream.read(),
-                dt=doc.doctype,
-                dn=doc.name,
-                folder=None,
-                decode=False,
-                is_private=1
-            )
-            doc.append("attachments", {
-                "file": saved_file.file_url
-            })
-            
-            doc.workflow_state = "Submit for Approval"  
-            doc.flags.ignore_permissions = True
-            doc.flags.ignore_validate = True
-            doc.flags.ignore_validate_update_after_submit = True
-            doc.flags.ignore_workflow_validation = True
-            doc.save()
+		if file:
+			saved_file = save_file(
+				fname=file.filename,
+				content=file.stream.read(),
+				dt=doc.doctype,
+				dn=doc.name,
+				folder=None,
+				decode=False,
+				is_private=1
+			)
+			doc.append("attachments", {
+				"file": saved_file.file_url
+			})
+		workflow = frappe.get_doc("Workflow", {"document_type": "Deliverable", "is_active": 1})
+		transition = next(
+			(t for t in workflow.transitions 
+			 if t.state == doc.workflow_state and t.action == "Submit for Approval"),
+			None
+		)
+		if not transition:
+			frappe.throw(_("No valid workflow transition found from state '{0}' using action 'Submit for Approval'").format(doc.workflow_state))
 
-        return {"message": "Deliverable submitted successfully"}
+		doc.workflow_state = transition.next_state
+		doc.flags.ignore_permissions = True
+		doc.flags.ignore_validate = True
+		doc.flags.ignore_validate_update_after_submit = True
+		doc.flags.ignore_workflow_validation = True
+		doc.save()
+		return {"message": "Deliverable submitted successfully"}
 
-    except frappe.DoesNotExistError:
-        frappe.throw(_("The deliverable does not exist"))
-    except Exception as e:
-        frappe.log_error(frappe.get_traceback(), "Submit Deliverable Error")
-        frappe.throw(_("Error: ") + str(e))
+	except frappe.DoesNotExistError:
+		frappe.throw(_("The deliverable does not exist"))
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), "Submit Deliverable Error")
+		frappe.throw(_("Error: ") + str(e))
+
+@frappe.whitelist(allow_guest=True) 
+def get_single_task(task_name):
+    task = frappe.get_all('Task', filters={'name': task_name}, fields=[
+        'name', 'assigned_to', 'end_date', 'priority', 'status', 'progress_',
+        'description'])  
+    if task:
+        return task[0]  
+    else:
+        return {"message": "Task not found"} 

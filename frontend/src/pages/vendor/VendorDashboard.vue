@@ -8,7 +8,6 @@
       <DashboardCard title="Your Deliverables" :count="pendingDeliverables.length" icon="📤" />
       <DashboardCard
   title="Submit a Deliverable"
-  :count="pendingDeliverables.length"
   icon="📤"
   @click="goToSubmitPage"
 />

@@ -80,7 +80,8 @@ const fetchDeliverables = async () => {
   try {
     const res = await fetch('/api/method/project_management.api.get_pending_deliverables_for_vendor');
     const data = await res.json();
-    deliverables.value = data.message || [];
+
+    deliverables.value = (data.message || []).filter(d => d.workflow_state === 'In Progress');
   } catch (error) {
     console.error('Failed to fetch deliverables:', error);
   }
