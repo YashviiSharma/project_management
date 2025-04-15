@@ -1,0 +1,111 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-14 09:42:58.470923",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "email",
+  "role",
+  "status",
+  "email_sent_at",
+  "invited_by",
+  "accepted_at",
+  "key",
+  "projects"
+ ],
+ "fields": [
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Email",
+   "options": "Email",
+   "reqd": 1
+  },
+  {
+   "fieldname": "role",
+   "fieldtype": "Select",
+   "label": "Role",
+   "options": "Client\nGuest",
+   "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending\nAccepted\nExpired"
+  },
+  {
+   "fieldname": "email_sent_at",
+   "fieldtype": "Datetime",
+   "label": "Email Sent At"
+  },
+  {
+   "fieldname": "invited_by",
+   "fieldtype": "Link",
+   "label": "Invited By",
+   "options": "User"
+  },
+  {
+   "fieldname": "accepted_at",
+   "fieldtype": "Datetime",
+   "label": "Accepted At"
+  },
+  {
+   "fieldname": "key",
+   "fieldtype": "Data",
+   "label": "Key"
+  },
+  {
+   "fieldname": "projects",
+   "fieldtype": "Small Text",
+   "label": "Projects"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-04-15 05:47:26.602301",
+ "modified_by": "Administrator",
+ "module": "Project Management",
+ "name": "PM Client Invitation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Client",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Guest",
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

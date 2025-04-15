@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestClientFeedback(FrappeTestCase):
+class TestPMClientInvitation(FrappeTestCase):
 	pass

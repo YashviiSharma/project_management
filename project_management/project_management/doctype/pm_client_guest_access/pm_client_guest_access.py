@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class ClientFeedback(Document):
+class PMClientGuestAccess(Document):
 	pass

@@ -511,3 +511,144 @@ def get_single_task(task_name):
         return task[0]  
     else:
         return {"message": "Task not found"} 
+	
+@frappe.whitelist(allow_guest=True)
+def accept_invitation(key: str = None):
+    if not key:
+        frappe.throw("Invalid or expired key")
+    
+    result = frappe.db.get_all("PM Client Invitation", filters={"key": key}, pluck="name")
+    if not result:
+        frappe.throw("Invalid or expired key")
+    
+    invitation = frappe.get_doc("PM Client Invitation", result[0])
+    
+    invitation.accept()
+    invitation.reload()
+    
+    user = frappe.get_doc("User", invitation.email)
+    needs_password_setup = user and not user.last_password_reset_date
+    
+    if invitation.status == "Accepted":
+        if needs_password_setup:
+            url = invitation.get_password_link()
+            frappe.local.response["type"] = "redirect"
+            frappe.local.response["location"] = f"{url}"
+        else:
+            frappe.local.login_manager.login_as(invitation.email)
+            frappe.local.response["type"] = "redirect"
+            frappe.local.response["location"] = "/frontend"
+
+
+@frappe.whitelist()
+def invite_by_email(emails, role):
+    if not emails:
+        return {"status": "error", "message": "No email provided"}
+    
+    user = frappe.session.user
+    
+    user_roles = frappe.get_roles(user)
+    if "Client" not in user_roles:
+        return {"status": "error", "message": "Only Clients can send invitations"}
+    
+    client_projects = frappe.get_all(
+        "Project", 
+        filters={"client": user},
+        pluck="name"
+    )
+    
+    if not client_projects:
+        return {"status": "error", "message": "You don't have any projects to share"}
+    
+    # Validate role
+    if role not in ["Client", "Guest"]:
+        return {"status": "error", "message": "Invalid role selected"}
+    
+    email_list = frappe.utils.split_emails(emails)
+    
+    # Check for existing users or pending invitations
+    existing_members = frappe.db.get_all("User", filters={"email": ["in", email_list]}, pluck="email")
+    existing_invites = frappe.db.get_all(
+        "PM Client Invitation",
+        filters={
+            "email": ["in", email_list],
+            "status": "Pending"
+        },
+        pluck="email"
+    )
+    
+    to_invite = list(set(email_list) - set(existing_invites))
+    
+    # Collect emails with pending invitations
+    pending_invites = list(set(email_list).intersection(set(existing_invites)))
+    
+    projects_json = frappe.as_json(client_projects, indent=None)
+    
+    invitations_sent = []
+    
+    for email in to_invite:
+        try:
+            invitation = frappe.get_doc(
+                doctype="PM Client Invitation", 
+                email=email, 
+                role=role, 
+                projects=projects_json
+            )
+            invitation.insert(ignore_permissions=True)
+            invitations_sent.append(email)
+        except Exception as e:
+            frappe.log_error(f"Failed to create invitation for {email}: {str(e)}", "Client Invitation")
+    
+    # Create appropriate message
+    message_parts = []
+    if invitations_sent:
+        message_parts.append(f"Invitations sent to {len(invitations_sent)} email(s)")
+    
+    if pending_invites:
+        message_parts.append(f"{len(pending_invites)} email(s) already have pending invitations")
+    
+    message = ". ".join(message_parts)
+    
+    return {
+        "status": "success" if invitations_sent else "info", 
+        "message": message,
+        "invitations_sent": invitations_sent,
+        "pending_invites": pending_invites
+    }
+
+
+@frappe.whitelist()
+def get_client_invitations():
+    """Get all invitations sent by the current client"""
+    user = frappe.session.user
+    
+    invitations = frappe.get_all(
+        "PM Client Invitation",
+        filters={"invited_by": user},
+        fields=["name", "email", "role", "status", "email_sent_at", "accepted_at"],
+        order_by="creation desc"
+    )
+    
+    return invitations
+
+
+# Add this function to check if a user is accessing as a guest of another client
+def get_client_for_guest(user=None):
+    """
+    If the user is a guest, returns the client they have access to
+    Otherwise returns None
+    """
+    if not user:
+        user = frappe.session.user
+    
+    guest_access = frappe.get_all(
+        "PM Client Guest Access",
+        filters={"user": user},
+        fields=["client"],
+        limit=1
+    )
+    
+    if guest_access:
+        return guest_access[0].client
+    
+    return None
