@@ -81,8 +81,8 @@ def get_task_progress_chart():
 @frappe.whitelist()
 def delete_task(task_name):
 	try:
-		task = frappe.get_doc("Task", {"task_name": task_name})  # Fetch task by name
-		task.delete()  # Delete the task
+		task = frappe.get_doc("Task", {"task_name": task_name}) 
+		task.delete()  
 		frappe.db.commit()
 		return "success"
 	except Exception as e:
@@ -91,108 +91,172 @@ def delete_task(task_name):
 	
 @frappe.whitelist()
 def get_client_projects():
-	"""
-	Get projects associated with the current logged-in client user
-	"""
-	user = frappe.session.user
-	
-	projects = frappe.get_all(
-		"Project",
-		filters={"client": user},
-		fields=["name", "project_name", "status", "project_type", "progress", 
-				"start_date", "end_date", "raven_channel"]
-	)
-	
-	return projects
+    """
+    Get projects associated with the current logged-in client user
+    and also projects of users who invited the current user
+    """
+    user = frappe.session.user
+    
+    # Get user's own projects
+    projects = frappe.get_all(
+        "Project",
+        filters={"client": user},
+        fields=["name", "project_name", "status", "project_type", "progress", 
+                "start_date", "end_date", "raven_channel"]
+    )
+    
+    # Get projects from inviters where the current user has accepted invitations
+    invitations = frappe.get_all(
+        "PM Client Invitation",
+        filters={
+            "email": user,
+            "status": "Accepted"
+        },
+        fields=["invited_by", "projects"]
+    )
+    
+    # Add projects from inviters
+    for invitation in invitations:
+        if invitation.projects:
+            invited_projects = frappe.parse_json(invitation.projects)
+            invited_project_details = frappe.get_all(
+                "Project",
+                filters={"name": ["in", invited_projects]},
+                fields=["name", "project_name", "status", "project_type", "progress", 
+                        "start_date", "end_date", "raven_channel"]
+            )
+            projects.extend(invited_project_details)
+    
+    return projects
 
 @frappe.whitelist()
 def get_client_deliverables(projects):
-	"""
-	Get pending deliverables for the client's projects
-	"""
-	if not projects:
-		return []
-	
-	user = frappe.session.user
-	
-	authorized_projects = frappe.get_all(
-		"Project",
-		filters={"client": user, "name": ["in", projects]},
-		pluck="name"
-	)
-	
-	if not authorized_projects:
-		return []
-	
-	deliverables = frappe.get_all(
-		"Deliverable",
-		filters={
-			"project": ["in", authorized_projects],
-		},
-		fields=["name", "deliverable_name", "project", "status", "due_date", "document"]
-	)
-	
-	return deliverables
+    """
+    Get pending deliverables for the client's projects and invited projects
+    """
+    if not projects:
+        return []
+    
+    user = frappe.session.user
+    
+    # Get projects the user directly owns
+    own_projects = frappe.get_all(
+        "Project",
+        filters={"client": user, "name": ["in", projects]},
+        pluck="name"
+    )
+    
+    # Get projects the user has been invited to
+    invited_projects = []
+    invitations = frappe.get_all(
+        "PM Client Invitation",
+        filters={
+            "email": user,
+            "status": "Accepted"
+        },
+        fields=["projects"]
+    )
+    
+    for invitation in invitations:
+        if invitation.projects:
+            invited_project_list = frappe.parse_json(invitation.projects)
+            invited_projects.extend([p for p in invited_project_list if p in projects])
+    
+    # Combine own and invited projects
+    authorized_projects = list(set(own_projects + invited_projects))
+    
+    if not authorized_projects:
+        return []
+    
+    deliverables = frappe.get_all(
+        "Deliverable",
+        filters={
+            "project": ["in", authorized_projects],
+        },
+        fields=["name", "deliverable_name", "project", "status", "due_date", "document"]
+    )
+    
+    return deliverables
 
 @frappe.whitelist()
 def get_client_dashboard_stats(projects):
-	"""
-	Get dashboard stats for the client
-	"""
-	if not projects:
-		return {
-			"active_projects": 0,
-			"pending_deliverables": 0,
-			"completed_projects": 0
-		}
-	
-	user = frappe.session.user
-	
-	authorized_projects = frappe.get_all(
-		"Project",
-		filters={"client": user, "name": ["in", projects]},
-		pluck="name"
-	)
-	
-	if not authorized_projects:
-		return {
-			"active_projects": 0,
-			"pending_deliverables": 0,
-			"completed_projects": 0
-		}
-	
-	active_projects = frappe.get_all(
-		"Project",
-		filters={
-			"name": ["in", authorized_projects],
-			"status": ["in", ["Planned", "In Progress", "On Hold"]]
-		},
-		as_list=True
-	)
-	
-	pending_deliverables = frappe.get_all(
-		"Deliverable",
-		filters={
-			"project": ["in", authorized_projects],
-			"status": ["in", ["Awaiting Client Review"]]
-		},
-		as_list=True
-	)
-	
-	completed_projects = frappe.get_all(
-		"Project",
-		filters={
-			"name": ["in", authorized_projects],
-			"status": "Completed"
-		},
-		as_list=True
-	)
-	
-	return {
-		"active_projects": len(active_projects),
-		"pending_deliverables": len(pending_deliverables),
-		"completed_projects": len(completed_projects)    
-	}
+    """
+    Get dashboard stats for the client including invited projects
+    """
+    if not projects:
+        return {
+            "active_projects": 0,
+            "pending_deliverables": 0,
+            "completed_projects": 0
+        }
+    
+    user = frappe.session.user
+    
+    # Get projects the user directly owns
+    own_projects = frappe.get_all(
+        "Project",
+        filters={"client": user, "name": ["in", projects]},
+        pluck="name"
+    )
+    
+    # Get projects the user has been invited to
+    invited_projects = []
+    invitations = frappe.get_all(
+        "PM Client Invitation",
+        filters={
+            "email": user,
+            "status": "Accepted"
+        },
+        fields=["projects"]
+    )
+    
+    for invitation in invitations:
+        if invitation.projects:
+            invited_project_list = frappe.parse_json(invitation.projects)
+            invited_projects.extend([p for p in invited_project_list if p in projects])
+    
+    # Combine own and invited projects
+    authorized_projects = list(set(own_projects + invited_projects))
+    
+    if not authorized_projects:
+        return {
+            "active_projects": 0,
+            "pending_deliverables": 0,
+            "completed_projects": 0
+        }
+    
+    active_projects = frappe.get_all(
+        "Project",
+        filters={
+            "name": ["in", authorized_projects],
+            "status": ["in", ["Planned", "In Progress", "On Hold"]]
+        },
+        as_list=True
+    )
+    
+    pending_deliverables = frappe.get_all(
+        "Deliverable",
+        filters={
+            "project": ["in", authorized_projects],
+            "status": ["in", ["Awaiting Client Review"]]
+        },
+        as_list=True
+    )
+    
+    completed_projects = frappe.get_all(
+        "Project",
+        filters={
+            "name": ["in", authorized_projects],
+            "status": "Completed"
+        },
+        as_list=True
+    )
+    
+    return {
+        "active_projects": len(active_projects),
+        "pending_deliverables": len(pending_deliverables),
+        "completed_projects": len(completed_projects)    
+    }
 
 @frappe.whitelist()
 def submit_deliverable_review(deliverable, comment, action):
@@ -264,126 +328,165 @@ def submit_deliverable_review(deliverable, comment, action):
 	
 @frappe.whitelist()
 def get_project_team_members(projects):
-	"""
-	Get all team members working on the client's projects
-	"""
-	if isinstance(projects, str):
-		import json
-		try:
-			parsed_data = json.loads(projects)
-			if isinstance(parsed_data, list):
-				projects = parsed_data
-			elif isinstance(parsed_data, dict) and 'projects' in parsed_data:
-				projects = parsed_data['projects']
-			else:
-				projects = [projects]
-		except json.JSONDecodeError:
-			projects = [projects]
-	elif isinstance(projects, dict) and 'projects' in projects:
-		projects = projects['projects']
-		
-	if not projects:
-		return {"members": [], "project_members": {}}
-	
-	user = frappe.session.user
-	
-	authorized_projects = frappe.get_all(
-		"Project",
-		filters={"client": user, "name": ["in", projects]},
-		pluck="name"
-	)
-	
-	if not authorized_projects:
-		return {"members": [], "project_members": {}}
-	
-	project_members = {}
-	members = set()
-	
-	for project in authorized_projects:
-		try:
-			project_doc = frappe.get_doc("Project", project)
-			
-			project_team = []
-			if hasattr(project_doc, 'team_member') and project_doc.team_member:
-				project_team = [d.user for d in project_doc.team_member if d.user]
-			elif hasattr(project_doc, 'users') and project_doc.users:
-				project_team = [d.user for d in project_doc.users if d.user]
-			
-			tasks = frappe.get_all("Task", filters={"project": project}, fields=["name", "assigned_to"])
-			task_members = [t.assigned_to for t in tasks if t.assigned_to]
-			
-			all_members = list(set(project_team + task_members))
-			
-			all_members = [m for m in all_members if m]
-			
-			project_members[project] = all_members
-			members.update(all_members)
-		except Exception as e:
-			frappe.log_error(f"Error processing project {project}: {str(e)}", 
-						   "Team Member Fetch Error")
-	
-	member_details = []
-	for member in members:
-		try:
-			user_doc = frappe.get_doc("User", member)
-			member_details.append({
-				"name": member,
-				"full_name": user_doc.full_name or user_doc.name,
-				"email": user_doc.email,
-				"mobile_no": user_doc.mobile_no if hasattr(user_doc, 'mobile_no') else None,
-				"designation": user_doc.designation if hasattr(user_doc, 'designation') else None,
-				"department": user_doc.department if hasattr(user_doc, 'department') else None
-			})
-		except Exception as e:
-			frappe.log_error(f"Error fetching team member details for {member}: {str(e)}", 
-							"Team Member Fetch Error")
-	
-	return {
-		"members": member_details,
-		"project_members": project_members
-	}
+    """
+    Get all team members working on the client's projects including invited projects
+    """
+    if isinstance(projects, str):
+        import json
+        try:
+            parsed_data = json.loads(projects)
+            if isinstance(parsed_data, list):
+                projects = parsed_data
+            elif isinstance(parsed_data, dict) and 'projects' in parsed_data:
+                projects = parsed_data['projects']
+            else:
+                projects = [projects]
+        except json.JSONDecodeError:
+            projects = [projects]
+    elif isinstance(projects, dict) and 'projects' in projects:
+        projects = projects['projects']
+        
+    if not projects:
+        return {"members": [], "project_members": {}}
+    
+    user = frappe.session.user
+    
+    # Get projects the user directly owns
+    own_projects = frappe.get_all(
+        "Project",
+        filters={"client": user, "name": ["in", projects]},
+        pluck="name"
+    )
+    
+    # Get projects the user has been invited to
+    invited_projects = []
+    invitations = frappe.get_all(
+        "PM Client Invitation",
+        filters={
+            "email": user,
+            "status": "Accepted"
+        },
+        fields=["projects"]
+    )
+    
+    for invitation in invitations:
+        if invitation.projects:
+            invited_project_list = frappe.parse_json(invitation.projects)
+            invited_projects.extend([p for p in invited_project_list if p in projects])
+    
+    # Combine own and invited projects
+    authorized_projects = list(set(own_projects + invited_projects))
+    
+    if not authorized_projects:
+        return {"members": [], "project_members": {}}
+    
+    project_members = {}
+    members = set()
+    
+    for project in authorized_projects:
+        try:
+            project_doc = frappe.get_doc("Project", project)
+            
+            project_team = []
+            if hasattr(project_doc, 'team_member') and project_doc.team_member:
+                project_team = [d.user for d in project_doc.team_member if d.user]
+            elif hasattr(project_doc, 'users') and project_doc.users:
+                project_team = [d.user for d in project_doc.users if d.user]
+            
+            tasks = frappe.get_all("Task", filters={"project": project}, fields=["name", "assigned_to"])
+            task_members = [t.assigned_to for t in tasks if t.assigned_to]
+            
+            all_members = list(set(project_team + task_members))
+            
+            all_members = [m for m in all_members if m]
+            
+            project_members[project] = all_members
+            members.update(all_members)
+        except Exception as e:
+            frappe.log_error(f"Error processing project {project}: {str(e)}", 
+                           "Team Member Fetch Error")
+    
+    member_details = []
+    for member in members:
+        try:
+            user_doc = frappe.get_doc("User", member)
+            member_details.append({
+                "name": member,
+                "full_name": user_doc.full_name or user_doc.name,
+                "email": user_doc.email,
+                "mobile_no": user_doc.mobile_no if hasattr(user_doc, 'mobile_no') else None,
+                "designation": user_doc.designation if hasattr(user_doc, 'designation') else None,
+                "department": user_doc.department if hasattr(user_doc, 'department') else None
+            })
+        except Exception as e:
+            frappe.log_error(f"Error fetching team member details for {member}: {str(e)}", 
+                            "Team Member Fetch Error")
+    
+    return {
+        "members": member_details,
+        "project_members": project_members
+    }
 
 @frappe.whitelist()
 def get_client_project_details(project):
-	"""
-	Get detailed information about a specific project for the client
-	
-	"""
-	user = frappe.session.user
-	
-	authorized = frappe.db.exists(
-		"Project", 
-		{"name": project, "client": user}
-	)
-	
-	if not authorized:
-		frappe.logger().info(f"User {user} attempted to access unauthorized project {project}")
-		return None
-	
-	try:
-		project_doc = frappe.get_doc("Project", project)
-		
-		project_data = {
-			"name": project_doc.name,
-			"project_name": project_doc.project_name,
-			"status": project_doc.status,
-			"project_type": project_doc.project_type,
-			"priority": project_doc.priority,
-			"progress": project_doc.progress,
-			"start_date": project_doc.start_date,
-			"end_date": project_doc.end_date,
-			"description": project_doc.description,
-			"document": project_doc.document,
-			"raven_channel": project_doc.raven_channel,
-			"department": project_doc.get("department") if hasattr(project_doc, "department") else None
-		}
-		
-		return project_data
-		
-	except Exception as e:
-		frappe.log_error(f"Error fetching project details for {project}: {str(e)}", 
-						"Project Details Fetch Error")
-		return None
+    """
+    Get detailed information about a specific project for the client or invited user
+    """
+    user = frappe.session.user
+    
+    # Check if the user directly owns the project
+    is_owner = frappe.db.exists(
+        "Project", 
+        {"name": project, "client": user}
+    )
+    
+    # Check if the user has been invited to this project
+    is_invited = False
+    if not is_owner:
+        invitations = frappe.get_all(
+            "PM Client Invitation",
+            filters={
+                "email": user,
+                "status": "Accepted"
+            },
+            fields=["projects"]
+        )
+        
+        for invitation in invitations:
+            if invitation.projects:
+                invited_projects = frappe.parse_json(invitation.projects)
+                if project in invited_projects:
+                    is_invited = True
+                    break
+    
+    if not (is_owner or is_invited):
+        frappe.logger().info(f"User {user} attempted to access unauthorized project {project}")
+        return None
+    
+    try:
+        project_doc = frappe.get_doc("Project", project)
+        
+        project_data = {
+            "name": project_doc.name,
+            "project_name": project_doc.project_name,
+            "status": project_doc.status,
+            "project_type": project_doc.project_type,
+            "priority": project_doc.priority,
+            "progress": project_doc.progress,
+            "start_date": project_doc.start_date,
+            "end_date": project_doc.end_date,
+            "description": project_doc.description,
+            "document": project_doc.document,
+            "raven_channel": project_doc.raven_channel,
+            "department": project_doc.get("department") if hasattr(project_doc, "department") else None
+        }
+        
+        return project_data
+        
+    except Exception as e:
+        frappe.log_error(f"Error fetching project details for {project}: {str(e)}", 
+                        "Project Details Fetch Error")
+        return None
  
 @frappe.whitelist(allow_guest=False)
 def get_assigned_tasks_for_vendor():
