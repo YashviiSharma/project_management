@@ -83,9 +83,40 @@ frappe.ui.form.on("Task", {
             const minutes = Math.floor((increment % 3600) / 60);
             const seconds = Math.floor(increment % 60);
             
-            $(frm.wrapper).find(".stopwatch .hours").text(hours.toString().padStart(2, '0'));
-            $(frm.wrapper).find(".stopwatch .minutes").text(minutes.toString().padStart(2, '0'));
-            $(frm.wrapper).find(".stopwatch .seconds").text(seconds.toString().padStart(2, '0'));
+            const hoursElement = $(frm.wrapper).find(".stopwatch .hours");
+            const minutesElement = $(frm.wrapper).find(".stopwatch .minutes");
+            const secondsElement = $(frm.wrapper).find(".stopwatch .seconds");
+            const colonElements = $(frm.wrapper).find(".stopwatch .colon");
+            const stopwatchElement = $(frm.wrapper).find(".stopwatch");
+            
+            hoursElement.text(hours.toString().padStart(2, '0'));
+            minutesElement.text(minutes.toString().padStart(2, '0'));
+            secondsElement.text(seconds.toString().padStart(2, '0'));
+            
+            const totalMinutes = (hours * 60) + minutes;
+            
+            // Set color based on time duration
+            let textColor;
+            if (increment < 60) { 
+                textColor = '#198754';
+            } else if (totalMinutes < 5) {
+                textColor = '#20c997'; 
+            } else if (totalMinutes < 10) { 
+                textColor = '#0041c2'; 
+            } else if (totalMinutes < 30) { 
+                textColor = '#fd7e14'; 
+            } else if (totalMinutes < 60) { 
+                textColor = '#d63384'; 
+            } else { 
+                textColor = '#dc3545'; 
+            }
+            
+            // Apply color to all timer elements
+            hoursElement.css('color', textColor);
+            minutesElement.css('color', textColor);
+            secondsElement.css('color', textColor);
+            colonElements.css('color', textColor);
+            
         }
 
         // Only add timer if it doesn't exist
