@@ -16,7 +16,7 @@
   "start_date",
   "end_date",
   "time_in_hours",
-  "progress_",
+  "progress",
   "document",
   "client_details_section",
   "client",
@@ -139,7 +139,7 @@
    "options": "Raven Channel"
   },
   {
-   "fieldname": "progress_",
+   "fieldname": "progress",
    "fieldtype": "Percent",
    "in_list_view": 1,
    "label": "Progress",
@@ -148,7 +148,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-19 10:58:22.987292",
+ "modified": "2025-04-19 15:17:36.142491",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Project",
