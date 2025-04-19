@@ -70,7 +70,7 @@
    "fieldname": "start_date",
    "fieldtype": "Date",
    "label": "Start Date",
-   "options": "today()"
+   "options": "Today"
   },
   {
    "fieldname": "end_date",
@@ -148,7 +148,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-19 15:17:36.142491",
+ "modified": "2025-04-19 20:36:45.580438",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Project",

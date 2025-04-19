@@ -37,7 +37,8 @@
    "fieldname": "project",
    "fieldtype": "Link",
    "label": "Project",
-   "options": "Project"
+   "options": "Project",
+   "reqd": 1
   },
   {
    "default": "In Progress",
@@ -126,7 +127,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-14 16:03:11.077922",
+ "modified": "2025-04-19 20:55:03.287576",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Deliverable",

@@ -4,12 +4,16 @@
 import frappe
 from frappe.utils import now, get_datetime, time_diff_in_seconds, flt
 from frappe.model.document import Document
+from frappe import _
 
 class Task(Document):
     def validate(self):
-        self.update_status()
-        self.calculate_totals()
+        if not self.is_new():
+            self.update_status()
+            self.calculate_totals()        
         
+        self.validate_dates_with_project()
+
     def after_insert(self):
         self.update_project()
 
@@ -20,7 +24,7 @@ class Task(Document):
     def on_trash(self):
         self.update_project()
         
-    def update_status(self):
+    def update_status(self):           
         if self.progress_ >= 100:
             self.status = "Completed"
         elif self.has_valid_operation():
@@ -35,8 +39,8 @@ class Task(Document):
 
     def calculate_totals(self):
         total_mins = 0
-        total_completion = 0
-        
+        total_completion = 0        
+            
         for log in (self.time_logs or []):
             if log.from_time and log.to_time:
                 duration = time_diff_in_seconds(log.to_time, log.from_time)
@@ -147,4 +151,35 @@ class Task(Document):
             frappe.db.set_value("Deliverable Task", dt.name, {
                 "status": self.status,
                 "progress_": self.progress_
-            })
+            })    
+        
+    def validate_dates_with_project(self):
+        if not self.project:
+            return
+            
+        project = frappe.get_cached_doc("Project", self.project)
+        
+        if self.start_date and project.start_date:
+            if get_datetime(self.start_date) < get_datetime(project.start_date):
+                frappe.throw(
+                    _("Task start date cannot be before project start date {0}").format(
+                        frappe.format(project.start_date, {"fieldtype": "Date"})
+                    ),
+                    title=_("Invalid Date")
+                )
+        
+        if self.end_date and project.end_date:
+            if get_datetime(self.end_date) > get_datetime(project.end_date):
+                frappe.throw(
+                    _("Task end date cannot be after project end date {0}").format(
+                        frappe.format(project.end_date, {"fieldtype": "Date"})
+                    ),
+                    title=_("Invalid Date")
+                )
+        
+        if self.start_date and self.end_date:
+            if get_datetime(self.start_date) > get_datetime(self.end_date):
+                frappe.throw(
+                    _("Task start date cannot be after end date"),
+                    title=_("Invalid Date Range")
+                )

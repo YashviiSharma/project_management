@@ -49,13 +49,15 @@
    "fieldname": "project",
    "fieldtype": "Link",
    "label": "Project",
-   "options": "Project"
+   "options": "Project",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_7d7a",
    "fieldtype": "Column Break"
   },
   {
+   "default": "Today",
    "fieldname": "start_date",
    "fieldtype": "Date",
    "label": "Start Date"
@@ -183,7 +185,7 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-04-18 23:18:45.617964",
+ "modified": "2025-04-19 20:03:38.218546",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Task",
