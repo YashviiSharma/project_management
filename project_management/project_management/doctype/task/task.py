@@ -15,6 +15,7 @@ class Task(Document):
 
     def on_update(self):
         self.update_project()
+        self.update_deliverable_task()        
 
     def on_trash(self):
         self.update_project()
@@ -139,3 +140,11 @@ class Task(Document):
             project = frappe.get_doc("Project", self.project)
             project.update_project_totals()
             project.save()
+
+    def update_deliverable_task(self):
+        deliverable_tasks = frappe.get_all("Deliverable Task", filters={"task": self.name})
+        for dt in deliverable_tasks:
+            frappe.db.set_value("Deliverable Task", dt.name, {
+                "status": self.status,
+                "progress_": self.progress_
+            })
