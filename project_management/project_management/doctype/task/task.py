@@ -10,6 +10,15 @@ class Task(Document):
         self.update_status()
         self.calculate_totals()
         
+    def after_insert(self):
+        self.update_project()
+
+    def on_update(self):
+        self.update_project()
+
+    def on_trash(self):
+        self.update_project()
+        
     def update_status(self):
         if self.progress_ >= 100:
             self.status = "Completed"
@@ -124,3 +133,9 @@ class Task(Document):
         self.calculate_totals()
         self.save()
         return self
+    
+    def update_project(self):      
+        if self.project:
+            project = frappe.get_doc("Project", self.project)
+            project.update_project_totals()
+            project.save()

@@ -16,7 +16,7 @@
   "start_date",
   "end_date",
   "time_in_hours",
-  "progress",
+  "progress_",
   "document",
   "client_details_section",
   "client",
@@ -81,13 +81,8 @@
   {
    "fieldname": "time_in_hours",
    "fieldtype": "Float",
-   "label": "Time (in Hours)"
-  },
-  {
-   "fieldname": "progress",
-   "fieldtype": "Percent",
-   "in_list_view": 1,
-   "label": "Progress"
+   "label": "Time (in Hours)",
+   "read_only": 1
   },
   {
    "fieldname": "client_details_section",
@@ -142,11 +137,18 @@
    "fieldtype": "Link",
    "label": "Raven Channel",
    "options": "Raven Channel"
+  },
+  {
+   "fieldname": "progress_",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Progress",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-07 12:59:46.978664",
+ "modified": "2025-04-19 10:58:22.987292",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Project",

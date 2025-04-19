@@ -17,6 +17,8 @@ class Project(Document):
     def validate(self):
         if not self.is_new() and not self.raven_channel:
             self.create_raven_channel()
+        self.update_project_totals()
+        self.update_project_status()
 
     def after_insert(self):
         self.create_raven_channel()
@@ -170,3 +172,29 @@ class Project(Document):
                 message=f"Channel member sync failed: {str(e)}",
                 title="Member Sync Error"
             )
+
+    # Update project time and progress based on linked tasks
+    def update_project_totals(self):
+        
+        tasks = frappe.get_all("Task",
+            filters={"project": self.name},
+            fields=["time_in_minutes", "progress_"]
+        )
+        
+        if tasks:
+            total_minutes = sum(task.time_in_minutes or 0 for task in tasks)
+            self.time_in_hours = total_minutes / 60
+            
+            total_progress = sum(task.progress_ or 0 for task in tasks)
+            self.progress_ = total_progress / len(tasks)
+        
+    def update_project_status(self):
+        if not hasattr(self, 'progress_') or self.progress is None:
+            self.progress = 0
+            
+        if self.progress_ == 0:
+            self.status = "Planned"
+        elif 0 < self.progress_ < 100:
+            self.status = "In Progress"
+        elif self.progress_ == 100:
+            self.status = "Completed"
