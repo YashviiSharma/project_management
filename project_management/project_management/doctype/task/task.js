@@ -162,7 +162,7 @@ frappe.ui.form.on("Task", {
 
     start_timer: function(frm) {
         frm.call('start_timer')
-            .then(() => frm.reload());
+            .then(() => frm.refresh());
     },
 
     pause_timer: function(frm) {
@@ -184,8 +184,8 @@ frappe.ui.form.on("Task", {
             
             frm.call('pause_timer', data)
                 .then(() => {
-                    frm.reload();
-                    frappe.show_alert(__("Task paused"), 3);
+                    frm.refresh();
+                    frappe.show_alert(__("Task Paused at {0}% progress", [frm.doc.progress_]), 3);
                 })
                 .catch(() => {
                     frm.dashboard.clear_headline();
@@ -195,7 +195,9 @@ frappe.ui.form.on("Task", {
 
     resume_timer: function(frm) {
         frm.call('resume_timer')
-            .then(() => frm.reload());
+            .then(() => { frm.refresh();
+            frappe.show_alert(__("Task Resumed"), 3);
+        });
     },
 
     complete_task: function(frm) {
@@ -206,8 +208,8 @@ frappe.ui.form.on("Task", {
                 
                 frm.call('complete_task')
                     .then(() => {
-                        frm.reload();
-                        frappe.show_alert(__("Task marked as complete"), 3);
+                        frm.refresh();
+                        frappe.show_alert(__("Task marked as Completed"), 3);
                     })
                     .catch(() => {
                         frm.dashboard.clear_headline();
