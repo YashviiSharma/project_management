@@ -3,11 +3,55 @@
 
 frappe.ui.form.on('Project', {
     refresh: function(frm) {
-        setupTaskButton(frm);
-        setupDeliverableButton(frm);
-        setupChannelButton(frm);
+        if (!frm.is_new()) {
+            setupTaskButton(frm);
+            setupDeliverableButton(frm);
+            setupChannelButton(frm);
+        }
+    },
+});
+
+frappe.ui.form.on('Team Member', {
+    user: function(frm, cdt, cdn) {
+        checkDuplicateTeamMember(frm, cdt, cdn);
     }
 });
+
+function checkDuplicateTeamMember(frm, cdt, cdn) {
+    const currentRow = locals[cdt][cdn];
+    if (!currentRow.user) return true;
+    
+    const user = currentRow.user;
+    let errorMessage = "";
+    if (frm.doc.client && user === frm.doc.client) {
+        errorMessage = `${user} is already assigned as the client and cannot be added as a team member`;
+    } else {
+        const duplicateIdx = frm.doc.team_member.findIndex(row => 
+            row.name !== cdn && row.user === user
+        );
+        
+        if (duplicateIdx !== -1) {
+            errorMessage = `Team member ${user} already exists in row ${duplicateIdx + 1}`;
+        }
+    }
+    
+    // If there's an error message, handle the error case
+    if (errorMessage) {
+        frappe.model.set_value(cdt, cdn, 'user', '');
+        frappe.show_alert({
+            message: __(errorMessage),
+            indicator: 'red'
+        }, 5);
+        setTimeout(() => {
+            const grid_row = cur_frm.get_field('team_member').grid.grid_rows.find(row => row.doc.name === cdn);
+            if (grid_row) grid_row.columns.user.focus();
+        }, 100);
+        
+        return false;
+    }
+    
+    return true;
+}
 
 function setupChannelButton(frm) {
     if (frm.doc.raven_channel) {

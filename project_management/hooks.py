@@ -144,6 +144,9 @@ doc_events = {
         "after_insert": "project_management.utils.user_sync.create_raven_user",
         "on_update": "project_management.utils.user_sync.update_raven_user",
         "on_trash": "project_management.utils.user_sync.delete_raven_user"
+    },
+    "Project": {
+        "after_insert": "project_management.utils.notifications.send_project_approval_email"
     }
 }
 

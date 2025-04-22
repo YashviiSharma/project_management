@@ -147,8 +147,17 @@
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2025-04-19 20:36:45.580438",
+ "links": [
+  {
+   "link_doctype": "Task",
+   "link_fieldname": "project"
+  },
+  {
+   "link_doctype": "Deliverable",
+   "link_fieldname": "project"
+  }
+ ],
+ "modified": "2025-04-21 16:53:13.015207",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Project",
