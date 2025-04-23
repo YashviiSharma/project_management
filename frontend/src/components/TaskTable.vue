@@ -1,4 +1,5 @@
 <template>
+  <Navbar />
   <div class="mt-6">
     <div class="bg-white p-6 rounded-2xl shadow-lg">
       <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
@@ -79,6 +80,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import Navbar from '@/components/Navbar.vue';
 
 const router = useRouter();
 
@@ -101,7 +103,6 @@ onMounted(() => {
   fetchTasks();
 });
 
-// Status Badge
 const statusBadge = (status) => {
   return {
     'bg-green-100 text-green-700': status === 'Completed',
@@ -111,7 +112,6 @@ const statusBadge = (status) => {
   };
 };
 
-// Priority Pill
 const priorityBadge = (priority) => {
   return `text-xs px-2 py-1 font-medium rounded-full ${
     priority === 'High'
@@ -126,7 +126,6 @@ const priorityIcon = (priority) => {
   return priority === 'High' ? '🔥' : priority === 'Medium' ? '⚠️' : '🐢';
 };
 
-// Due Date Label
 const dateLabel = (due) => {
   if (!due) return 'No Due Date';
   const today = new Date();
@@ -151,7 +150,6 @@ const dateBadge = (due) => {
   }`;
 };
 
-// Progress Bar Color
 const progressColor = (progress) => {
   return progress <= 25
     ? 'bg-red-500'
@@ -162,7 +160,6 @@ const progressColor = (progress) => {
     : 'bg-green-500';
 };
 
-// Icons per task type
 const getIcon = (type) => {
   switch (type) {
     case 'Design':
