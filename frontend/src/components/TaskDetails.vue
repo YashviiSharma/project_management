@@ -1,4 +1,5 @@
 <template>
+  <Navbar />
     <div class="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg">
       <div class="mb-6 flex items-center justify-between">
         <button @click="goBack" class="text-sm text-gray-600 hover:text-indigo-600 flex items-center gap-1">
@@ -8,7 +9,6 @@
           Back to Tasks
         </button>
   
-        <!-- Move the status badge inside the v-if check to avoid accessing null -->
         <span
           v-if="task"
           class="text-xs font-semibold px-3 py-1 rounded-full"
@@ -70,7 +70,7 @@
   <script setup>
   import { ref, onMounted } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
-  
+  import Navbar from '@/components/Navbar.vue';  
   const route = useRoute();
   const router = useRouter();
   const taskName = decodeURIComponent(route.params.name);

@@ -1,4 +1,5 @@
 <template>
+  <Navbar />
   <div class="min-h-screen bg-gray-50 py-10">
     <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-xl p-10">
       <h1 class="text-4xl font-semibold text-gray-800 mb-12 text-center tracking-wide">Your Deliverables</h1>
@@ -43,6 +44,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import Navbar from '@/components/Navbar.vue';
 
 const deliverables = ref([]);
 const router = useRouter();
@@ -64,7 +66,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* General Layout */
 body {
   font-family: 'Inter', sans-serif;
 }
@@ -79,7 +80,7 @@ th, td {
 }
 
 th {
-  background-color: #1A202C; /* Darker Gray for Header */
+  background-color: #1A202C;
   color: white;
   text-transform: uppercase;
 }
@@ -88,14 +89,12 @@ td {
   background-color: #FFFFFF;
 }
 
-/* Row Hover Effect */
 tr:hover {
-  background-color: #F7FAFC; /* Light Gray Background on Hover */
+  background-color: #F7FAFC;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
 }
 
-/* Status Color Coding */
 .text-green-500 {
   color: #38A169;
 }
@@ -108,7 +107,6 @@ tr:hover {
   color: #E53E3E;
 }
 
-/* Button Styling */
 button {
   transition: all 0.3s ease;
   padding: 0.75rem 2rem;
@@ -131,7 +129,6 @@ button i {
   font-size: 1.2rem;
 }
 
-/* Responsive Table */
 @media (max-width: 768px) {
   table {
     width: 100%;
@@ -143,7 +140,6 @@ button i {
   }
 }
 
-/* Container Styling */
 .bg-white {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   border-radius: 12px;

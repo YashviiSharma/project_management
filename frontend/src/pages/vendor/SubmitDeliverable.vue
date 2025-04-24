@@ -1,4 +1,5 @@
 <template>
+  <Navbar />
     <div class="min-h-screen bg-gray-50 p-6">
       <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8 relative">
         <h1 class="text-3xl font-extrabold text-gray-800 mb-6 flex items-center gap-2">
@@ -8,7 +9,6 @@
           </svg>
           Submit a Deliverable
         </h1>
-  
         <div class="space-y-6">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Select Deliverable</label>
@@ -25,20 +25,6 @@
                 {{ d.deliverable_name }} ({{ d.project }})
               </option>
             </select>
-          </div>
-  
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Upload Document</label>
-            <input
-              type="file"
-              class="block w-full text-sm text-gray-500
-                     file:mr-4 file:py-2 file:px-4
-                     file:rounded-lg file:border-0
-                     file:text-sm file:font-semibold
-                     file:bg-blue-50 file:text-blue-700
-                     hover:file:bg-blue-100"
-              @change="handleFileChange"
-            />
           </div>
   
           <div>
@@ -68,6 +54,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import Navbar from '@/components/Navbar.vue';
 
 const router = useRouter();
 
@@ -80,17 +67,11 @@ const fetchDeliverables = async () => {
   try {
     const res = await fetch('/api/method/project_management.api.get_pending_deliverables_for_vendor');
     const data = await res.json();
-
     deliverables.value = (data.message || []).filter(d => d.workflow_state === 'In Progress');
   } catch (error) {
     console.error('Failed to fetch deliverables:', error);
   }
 };
-
-const handleFileChange = (e) => {
-  file.value = e.target.files[0];
-};
-
 const submitDeliverable = async () => {
   const formData = new FormData();
   formData.append('deliverable', selectedDeliverable.value);
@@ -112,6 +93,10 @@ const submitDeliverable = async () => {
 console.log("Deliverables API response:", data);
 
 if (data.message?.message === 'Deliverable submitted successfully') {
+  deliverables.value = deliverables.value.filter(d => d.name !== selectedDeliverable.value);
+  selectedDeliverable.value = '';
+  description.value = '';
+  file.value = null;
   alert('Deliverable submitted successfully!');
   router.push('/thank-you');
 } else {
