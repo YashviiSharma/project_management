@@ -760,3 +760,35 @@ def get_client_for_guest(user=None):
         return guest_access[0].client
     
     return None
+
+@frappe.whitelist()
+def get_deliverable_comments(deliverable_name):
+    try:
+        comments = frappe.get_all("Comment",
+            filters={
+                "reference_doctype": "Deliverable",
+                "reference_name": deliverable_name
+            },
+            fields=["content", "comment_by as commented_by", "creation", "comment_type"]
+        )
+        
+        # activity = frappe.get_all("Activity Log",
+        #     filters={
+        #         "reference_doctype": "Deliverable",
+        #         "reference_name": deliverable_name
+        #     },
+        #     fields=["subject as content", "user as commented_by", "creation", "'Activity' as comment_type"]
+        # )
+        
+        # all_comments = comments + activity
+        all_comments = comments 
+        all_comments.sort(key=lambda x: x["creation"], reverse=True)
+        
+        return all_comments
+        
+    except Exception as e:
+        frappe.log_error(f"Error fetching deliverable comments: {str(e)}")
+        return []
+
+
+

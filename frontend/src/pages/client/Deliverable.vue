@@ -76,6 +76,17 @@
 								Download
 							</button>
 							
+							<!-- Add Load Comments button -->
+							<button 
+								@click="toggleComments(deliverable.name)"
+								class="text-gray-600 hover:text-gray-800 font-medium text-sm flex items-center"
+							>
+								<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+								</svg>
+								{{ deliverable.name === currentDeliverableWithComments && comments.length > 0 ? 'Hide Comments' : 'Load Comments' }}
+							</button>
+							
 							<button 
 								@click="openReviewDialog(deliverable)"
 								class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium"
@@ -83,6 +94,25 @@
 							>
 								Submit Review
 							</button>
+						</div>
+					</div>
+
+					<!-- Comments Section - Show when comments are loaded -->
+					<div v-if="deliverable.name === currentDeliverableWithComments && comments.length > 0 && showComments" class="mt-4 border-t pt-4">						<h3 class="text-lg font-semibold text-gray-800 mb-3">Activity & Comments</h3>
+						<div class="space-y-3">
+							<div v-for="(comment, index) in comments" :key="index" class="bg-gray-50 p-3 rounded">
+								<div class="flex justify-between items-start">
+									<span class="font-medium text-gray-700">{{ comment.commented_by }}</span>
+									<span class="text-xs text-gray-500">{{ formatDateTime(comment.creation) }}</span>
+								</div>
+								<p class="mt-1 text-gray-600">{{ comment.content }}</p>
+								<div v-if="comment.comment_type === 'Comment'" class="mt-1 text-xs text-gray-500">
+									{{ comment.comment_type }}
+								</div>
+								<div v-else class="mt-1 text-xs text-blue-500">
+									{{ comment.comment_type }}: {{ comment.reference_doctype }} {{ comment.reference_name }}
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -133,6 +163,15 @@
 					</div>
 				</div>
 			</div>
+			<!-- Comments Loading Dialog -->
+			<div v-if="loadingComments" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+				<div class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full">
+					<div class="text-center">
+						<div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+						<p class="mt-3 text-gray-600">Loading comments...</p>
+					</div>
+				</div>
+			</div>
 		</main>
 
 		<!-- Use the Footer component -->
@@ -162,7 +201,11 @@ export default {
 			showReviewDialog: false,
 			currentDeliverable: null,
 			reviewComment: '',
-			reviewAction: 'Approve'
+			reviewAction: 'Approve',
+			comments: [],
+			currentDeliverableWithComments: null,
+			loadingComments: false,
+			showComments: false,
 		}
 	},
 	computed: {
@@ -272,91 +315,156 @@ export default {
 			this.reviewAction = 'Approve';
 			this.showReviewDialog = true;
 		},
+
+		formatDateTime(dateTimeString) {
+			if (!dateTimeString) return 'N/A';
+			const options = { 
+				year: 'numeric', 
+				month: 'short', 
+				day: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit'
+			};
+			return new Date(dateTimeString).toLocaleDateString(undefined, options);
+		},
+
 		async submitReview() {
-	try {
-		// Show loading state
-		Swal.fire({
-			title: 'Submitting review...',
-			text: 'Please wait while we process your feedback',
-			allowOutsideClick: false,
-			didOpen: () => {
-				Swal.showLoading();
-			}
-		});
-
-		// Make the API request
-		const response = await fetch('/api/method/project_management.api.submit_deliverable_review', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				deliverable: this.currentDeliverable.name,
-				comment: this.reviewComment,
-				action: this.reviewAction
-			})
-		});
-
-		const data = await response.json();
-
-		if (data.message?.status === "success") {
-			await this.fetchDeliverables();
-			this.showReviewDialog = false;
-
-			Swal.fire({
-				icon: 'success',
-				title: 'Success!',
-				text: data.message.message || 'Review submitted successfully',
-				confirmButtonColor: '#3085d6'
-			});
-			return;
-		}
-
-		if (data.message?.status === "error") {
-			throw new Error(data.message.message || 'Failed to submit review');
-		}
-
-		if (data.message === "success") {
-			await this.fetchDeliverables();
-			this.showReviewDialog = false;
-			Swal.fire({
-				icon: 'success',
-				title: 'Success!',
-				text: 'Review submitted successfully',
-				confirmButtonColor: '#3085d6'
-			});
-			return;
-		}
-
-		if (data._server_messages) {
-			let errorMessages;
 			try {
-				errorMessages = JSON.parse(data._server_messages);
-				throw new Error(errorMessages.map(msg => {
-					try {
-						return JSON.parse(msg).message;
-					} catch (e) {
-						return msg;
+				// Show loading state
+				Swal.fire({
+					title: 'Submitting review...',
+					text: 'Please wait while we process your feedback',
+					allowOutsideClick: false,
+					didOpen: () => {
+						Swal.showLoading();
 					}
-				}).join(', '));
-			} catch (e) {
-				throw new Error(data._server_messages);
+				});
+
+				// Make the API request
+				const response = await fetch('/api/method/project_management.api.submit_deliverable_review', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						deliverable: this.currentDeliverable.name,
+						comment: this.reviewComment,
+						action: this.reviewAction
+					})
+				});
+
+				const data = await response.json();
+
+				if (data.message?.status === "success") {
+					await this.fetchDeliverables();
+					this.showReviewDialog = false;
+
+					Swal.fire({
+						icon: 'success',
+						title: 'Success!',
+						text: data.message.message || 'Review submitted successfully',
+						confirmButtonColor: '#3085d6'
+					});
+					return;
+				}
+
+				if (data.message?.status === "error") {
+					throw new Error(data.message.message || 'Failed to submit review');
+				}
+
+				if (data.message === "success") {
+					await this.fetchDeliverables();
+					this.showReviewDialog = false;
+					Swal.fire({
+						icon: 'success',
+						title: 'Success!',
+						text: 'Review submitted successfully',
+						confirmButtonColor: '#3085d6'
+					});
+					return;
+				}
+
+				if (data._server_messages) {
+					let errorMessages;
+					try {
+						errorMessages = JSON.parse(data._server_messages);
+						throw new Error(errorMessages.map(msg => {
+							try {
+								return JSON.parse(msg).message;
+							} catch (e) {
+								return msg;
+							}
+						}).join(', '));
+					} catch (e) {
+						throw new Error(data._server_messages);
+					}
+				}
+
+				throw new Error('Failed to submit review: Unknown response format');
+
+			} catch (error) {
+				console.error('Error submitting review:', error);
+
+				Swal.fire({
+					icon: 'error',
+					title: 'Error!',
+					text: error.message || 'Unknown error occurred',
+					confirmButtonColor: '#d33'
+				});
 			}
-		}
+		},
 
-		throw new Error('Failed to submit review: Unknown response format');
-
-	} catch (error) {
-		console.error('Error submitting review:', error);
-
-		Swal.fire({
-			icon: 'error',
-			title: 'Error!',
-			text: error.message || 'Unknown error occurred',
-			confirmButtonColor: '#d33'
-		});
-	}
-}
+		async toggleComments(deliverableName) {
+			// If clicking the same deliverable's comments button
+			if (this.currentDeliverableWithComments === deliverableName) {
+				// Toggle visibility
+				this.showComments = !this.showComments;
+				
+				// If turning visible and no comments loaded yet, fetch them
+				if (this.showComments && this.comments.length === 0) {
+					await this.loadComments(deliverableName);
+				}
+			} 
+			// If clicking a different deliverable's comments button
+			else {
+				this.currentDeliverableWithComments = deliverableName;
+				this.showComments = true;
+				await this.loadComments(deliverableName);
+			}
+		},
+		
+		async loadComments(deliverableName) {
+			try {
+				this.loadingComments = true;
+				
+				// Fetch comments from the server
+				const response = await fetch('/api/method/project_management.api.get_deliverable_comments', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						deliverable_name: deliverableName
+					})
+				});
+				
+				if (!response.ok) throw new Error('Failed to fetch comments');
+				
+				const data = await response.json();
+				this.comments = data.message || [];
+				
+			} catch (error) {
+				console.error('Error loading comments:', error);
+				Swal.fire({
+					icon: 'error',
+					title: 'Error',
+					text: 'Failed to load comments. Please try again.',
+					confirmButtonColor: '#d33'
+				});
+			} finally {
+				this.loadingComments = false;
+			}
+		},
 	}
 }
 </script>
