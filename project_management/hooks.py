@@ -10,6 +10,7 @@ app_license = "mit"
 
 after_migrate = "project_management.utils.add_role.create_roles"
 
+on_session_creation = ["project_management.utils.override.login_redirection"]
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
