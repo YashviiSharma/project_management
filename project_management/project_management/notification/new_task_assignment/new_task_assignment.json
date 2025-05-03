@@ -1,0 +1,30 @@
+{
+ "attach_print": 0,
+ "channel": "Email",
+ "creation": "2025-05-03 22:24:30.135344",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Task",
+ "enabled": 1,
+ "event": "New",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "<div style=\"font-family: Georgia, 'Times New Roman', serif; max-width: 650px; margin: 0 auto; padding: 30px; border: 2px solid #2c3e50; border-radius: 0px; background-color: #f8f9fa;\">\n  <div style=\"text-align: center; margin-bottom: 30px; border-bottom: 1px solid #2c3e50; padding-bottom: 20px;\">\n    <h2 style=\"color: #2c3e50; font-weight: normal; letter-spacing: 1px; text-transform: uppercase;\">New Task Assignment Notification</h2>\n  </div>\n\n  <p style=\"font-size: 16px; color: #2c3e50; line-height: 1.8; text-align: justify;\">\n    Dear <strong>{{ frappe.db.get_value('User', doc.assigned_to, 'full_name') }}</strong>,\n  </p>\n\n  <p style=\"font-size: 16px; color: #2c3e50; line-height: 1.8; text-align: justify;\">\n    You have been assigned a new task in the project <strong>{{ doc.project }}</strong>. Please review the task details below and take appropriate action as required.\n  </p>\n\n  <div style=\"margin: 25px 0; padding: 25px; background-color: #f0f2f5; border: 1px solid #2c3e50;\">\n    <h3 style=\"color: #2c3e50; margin-top: 0; font-weight: normal; letter-spacing: 1px; border-bottom: 1px solid #2c3e50; padding-bottom: 10px;\">Task Details:</h3>\n    <ul style=\"padding-left: 20px; color: #2c3e50; font-size: 15px; line-height: 1.8;\">\n      <li><strong>Task Name:</strong> {{ doc.task_name }}</li>\n      <li><strong>Project:</strong> {{ doc.project }}</li>\n      <li><strong>Status:</strong> {{ doc.status }}</li>\n      <li><strong>Priority:</strong> {{ doc.priority }}</li>\n      <li><strong>Start Date:</strong> {% if doc.start_date %}{{ frappe.format_date(doc.start_date) }}{% else %}Not Specified{% endif %}</li>\n      <li><strong>End Date:</strong> {% if doc.end_date %}{{ frappe.format_date(doc.end_date) }}{% else %}Not Specified{% endif %}</li>\n      {% if doc.parent_task %}<li><strong>Parent Task:</strong> {{ doc.parent_task }}</li>{% endif %}\n    </ul>\n\n    {% if doc.description %}\n    <div style=\"margin-top: 20px;\">\n      <h4 style=\"margin-bottom: 10px; color: #2c3e50; font-weight: normal; letter-spacing: 1px;\">Task Description:</h4>\n      <p style=\"font-size: 15px; color: #2c3e50; line-height: 1.8; text-align: justify;\">{{ doc.description }}</p>\n    </div>\n    {% endif %}\n  </div>\n\n  <div style=\"text-align: center; margin: 40px 0;\">\n    <a href=\"{{ frappe.utils.get_url() }}/app/task/{{ doc.name }}\"\n      style=\"background-color: #2c3e50; color: white; padding: 14px 35px; text-decoration: none; font-weight: normal; letter-spacing: 1px; display: inline-block; border: 1px solid #2c3e50;\">\n      View Task Details\n    </a>\n  </div>\n\n  <p style=\"font-size: 15px; color: #2c3e50; line-height: 1.8; text-align: justify;\">\n    Please begin work on this task at your earliest convenience. If you have any questions or require clarification about this task, please contact the project manager.\n  </p>\n\n  <div style=\"margin-top: 40px;\">\n    <p style=\"font-size: 15px; color: #2c3e50; line-height: 1.5; margin-bottom: 5px;\">\n      Regards,\n    </p>\n    <p style=\"font-size: 15px; color: #2c3e50; line-height: 1.5; margin-top: 0;\">\n      <strong>Project Management Office</strong><br>\n      {{ frappe.get_system_settings(\"project_management\") or \"Project Manager\" }}\n    </p>\n  </div>\n\n  <div style=\"margin-top: 40px; padding-top: 20px; border-top: 1px solid #2c3e50; text-align: center; color: #5a6268; font-size: 12px; font-style: italic;\">\n    <p>This is an automated notification from the <strong>{{ frappe.get_system_settings(\"app_name\") or \"Project Management\" }}</strong> system. Please do not reply to this email.</p>\n  </div>\n</div>\n",
+ "message_type": "Markdown",
+ "modified": "2025-05-03 22:27:52.468381",
+ "modified_by": "Administrator",
+ "module": "Project Management",
+ "name": "New Task Assignment",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_document_field": "assigned_to"
+  }
+ ],
+ "send_system_notification": 1,
+ "send_to_all_assignees": 0,
+ "sender": "Project Management",
+ "sender_email": "projectmanagementfrappe@gmail.com",
+ "subject": "New Task Assigned: {{doc.task_name}} for {{doc.project}}"
+}
