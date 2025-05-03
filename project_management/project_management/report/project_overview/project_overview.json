@@ -9,7 +9,7 @@
  "idx": 4,
  "is_standard": "Yes",
  "letterhead": null,
- "modified": "2025-03-31 18:16:39.528899",
+ "modified": "2025-05-03 16:19:23.329143",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Project Overview",
@@ -18,7 +18,7 @@
  "query": "SELECT \n    p.name AS \"Project ID\",\n    p.project_name AS \"Project Name\",\n    p.status AS \"Status\",\n    p.priority AS \"Priority\",\n    p.start_date AS \"Start Date\",\n    p.end_date AS \"End Date\",\n    p.progress AS \"Completion Percentage\",\n    GROUP_CONCAT(DISTINCT tm.user) AS \"Assigned Team\",\n    (SELECT COUNT(*) FROM `tabTask` t WHERE t.project = p.name AND t.status != 'Completed') AS \"Pending Tasks\",\n    (SELECT COUNT(*) FROM `tabTask` t WHERE t.project = p.name AND t.status = 'Completed') AS \"Completed Tasks\"\nFROM `tabProject` p\nLEFT JOIN `tabTeam Member` tm ON tm.parent = p.name\nGROUP BY p.name\nORDER BY p.start_date DESC;\n",
  "ref_doctype": "Project",
  "report_name": "Project Overview",
- "report_type": "Query Report",
+ "report_type": "Script Report",
  "roles": [
   {
    "role": "System Manager"

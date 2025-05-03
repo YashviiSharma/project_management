@@ -20,4 +20,4 @@ def login_redirection():
         frappe.local.response['home_page'] = "frontend/vendor/dashboard"
     else:
         # Default redirect if none of the specified roles
-        frappe.local.response['home_page'] = "/app"
+        frappe.local.response['home_page'] = "/frontend"

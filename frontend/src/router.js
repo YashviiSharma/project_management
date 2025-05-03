@@ -7,6 +7,7 @@ const routes = [
     path: '/',
     name: 'Home',
     component: () => import('@/pages/Home.vue'),
+    meta: { public: true },
   },
   {
     name: 'Login',
@@ -84,6 +85,10 @@ let router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+  if (to.meta.public) {
+    return next();
+  }
+  
   let isLoggedIn = session.isLoggedIn
   try {
     await userResource.promise
