@@ -148,6 +148,12 @@ doc_events = {
     },
     "Project": {
         "after_insert": "project_management.utils.notifications.send_project_approval_email"
+    },
+    "Deliverable": {
+        "on_update": [
+            "project_management.utils.notifications.send_deliverable_review_notification",
+            "project_management.utils.notifications.send_deliverable_status_change_notification",
+        ]
     }
 }
 
