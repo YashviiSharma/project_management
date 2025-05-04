@@ -60,7 +60,7 @@ def send_team_member_notifications(doc):
             "member_email": member.email,
             "client_name": frappe.db.get_value('User', doc.client, 'full_name'),
             "client_email": frappe.db.get_value('User', doc.client, 'email'),
-            "project_url": f"{get_url()}/frontend/client/projects/{doc.name}"
+            "project_url": f"{get_url()}/app/project/{doc.name}"
         }
         
         # Render team member notification template

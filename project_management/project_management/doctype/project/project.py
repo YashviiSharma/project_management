@@ -173,7 +173,7 @@ class Project(Document):
                 title="Member Sync Error"
             )
 
-    # Update project time and progress based on linked tasks
+    # Update project time and progress_ based on linked tasks
     def update_project_totals(self):
         
         tasks = frappe.get_all("Task",
@@ -186,15 +186,15 @@ class Project(Document):
             self.time_in_hours = total_minutes / 60
             
             total_progress = sum(task.progress_ or 0 for task in tasks)
-            self.progress = total_progress / len(tasks)
+            self.progress_ = total_progress / len(tasks)
         
     def update_project_status(self):
-        if not hasattr(self, 'progress_') or self.progress is None:
-            self.progress = 0
+        if not hasattr(self, 'progress_') or self.progress_ is None:
+            self.progress_ = 0
             
-        if self.progress == 0:
+        if self.progress_ == 0:
             self.status = "Planned"
-        elif 0 < self.progress < 100:
+        elif 0 < self.progress_ < 100:
             self.status = "In Progress"
-        elif self.progress == 100:
+        elif self.progress_ == 100:
             self.status = "Completed"

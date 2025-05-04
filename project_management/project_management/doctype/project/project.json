@@ -16,7 +16,7 @@
   "start_date",
   "end_date",
   "time_in_hours",
-  "progress",
+  "progress_",
   "document",
   "client_details_section",
   "client",
@@ -93,7 +93,8 @@
    "fieldname": "client",
    "fieldtype": "Link",
    "label": "Client",
-   "options": "User"
+   "options": "User",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_ycdk",
@@ -139,7 +140,7 @@
    "options": "Raven Channel"
   },
   {
-   "fieldname": "progress",
+   "fieldname": "progress_",
    "fieldtype": "Percent",
    "in_list_view": 1,
    "label": "Progress",
@@ -157,7 +158,7 @@
    "link_fieldname": "project"
   }
  ],
- "modified": "2025-04-21 16:53:13.015207",
+ "modified": "2025-05-04 21:05:06.969518",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Project",
