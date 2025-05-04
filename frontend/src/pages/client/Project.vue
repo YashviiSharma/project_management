@@ -207,7 +207,7 @@ export default {
     },
     
     goToNewProject() {
-      this.$router.push('/client/projects/new');
+      window.location.replace(window.location.origin + '/propose-your-idea/new');
     }
   }
 }
