@@ -487,39 +487,40 @@ def get_client_project_details(project):
         frappe.log_error(f"Error fetching project details for {project}: {str(e)}", 
                         "Project Details Fetch Error")
         return None
- 
 @frappe.whitelist(allow_guest=False)
 def get_assigned_tasks_for_vendor():
-	user_email = frappe.session.user
+    user_email = frappe.session.user
 
-	project_links = frappe.get_all(
-		"Team Member",
-		filters={"user": user_email},
-		fields=["parent"]
-	)
-	project_ids = [p["parent"] for p in project_links]
+    project_links = frappe.get_all(
+        "Team Member",
+        filters={"user": user_email},
+        fields=["parent"]
+    )
+    project_ids = [p["parent"] for p in project_links]
 
-	if project_ids:
-		tasks = frappe.get_all(
-			"Task",
-			filters={"project": ["in", project_ids]},
-			fields=[
-				"name",       
-				"task_name",    
-				"status",
-				"start_date",
-				"end_date",
-				"project",
-				"assigned_to",
-				"progress_",
-				"priority"
-			]
-		)
-	else:
-		tasks = []
+    if project_ids:
+        tasks = frappe.get_all(
+            "Task",
+            filters={
+                "project": ["in", project_ids],
+                "assigned_to": user_email  
+            },
+            fields=[
+                "name",       
+                "task_name",    
+                "status",
+                "start_date",
+                "end_date",
+                "project",
+                "assigned_to",
+                "progress_",
+                "priority"
+            ]
+        )
+    else:
+        tasks = []
 
-	return tasks
-
+    return tasks
 
 @frappe.whitelist()
 def get_pending_deliverables_for_vendor():
@@ -528,8 +529,7 @@ def get_pending_deliverables_for_vendor():
     task_deliverables = frappe.get_all(
         "Deliverable Task",
         filters={
-            "assigned_to": user_email,
-            "progress_": 100
+            "assigned_to": user_email
         },
         fields=["parent"],
         distinct=True
@@ -549,6 +549,7 @@ def get_pending_deliverables_for_vendor():
             "deliverable_name",
             "project",
             "status",
+            "workflow_state",  
             "due_date",
             "priority",
             "submission_date"
@@ -557,6 +558,7 @@ def get_pending_deliverables_for_vendor():
     )
 
     return deliverables
+
 
 
 @frappe.whitelist(allow_guest=False)
