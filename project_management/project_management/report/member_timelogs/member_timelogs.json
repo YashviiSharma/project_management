@@ -1,0 +1,30 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2025-05-04 16:18:42.403383",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2025-05-04 16:18:42.403383",
+ "modified_by": "Administrator",
+ "module": "Project Management",
+ "name": "Member Timelogs",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Task",
+ "report_name": "Member Timelogs",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Website Manager"
+  }
+ ],
+ "timeout": 0
+}
