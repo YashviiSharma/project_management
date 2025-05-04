@@ -1,0 +1,30 @@
+{
+ "attach_print": 0,
+ "channel": "Email",
+ "creation": "2025-05-04 13:23:09.470238",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Project Proposal",
+ "enabled": 1,
+ "event": "New",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "<div style=\"font-family: Georgia, 'Times New Roman', serif; max-width: 650px; margin: 0 auto; padding: 30px; border: 2px solid #2c3e50; border-radius: 0px; background-color: #f8f9fa;\">\n  <div style=\"text-align: center; margin-bottom: 30px; border-bottom: 1px solid #2c3e50; padding-bottom: 20px;\">\n    <h2 style=\"color: #2c3e50; font-weight: normal; letter-spacing: 1px; text-transform: uppercase;\">New Project Proposal Submission</h2>\n  </div>\n\n  <p style=\"font-size: 16px; color: #2c3e50; line-height: 1.8; text-align: justify;\">\n    Dear <strong>{{ frappe.db.get_value('User', frappe.session.user, 'full_name') }}</strong>,\n  </p>\n\n  <p style=\"font-size: 16px; color: #2c3e50; line-height: 1.8; text-align: justify;\">\n    We are pleased to acknowledge the receipt of your new project proposal, <strong>{{ doc.project_name }}</strong>. Your proposal has been successfully registered in our system and will be reviewed by our Project Management Committee at the earliest convenience.\n  </p>\n\n  <p style=\"font-size: 16px; color: #2c3e50; line-height: 1.8; text-align: justify;\">\n    Please find below a summary of your submitted project proposal:\n  </p>\n\n  <div style=\"margin: 25px 0; padding: 25px; background-color: #f0f2f5; border: 1px solid #2c3e50;\">\n    <h3 style=\"color: #2c3e50; margin-top: 0; font-weight: normal; letter-spacing: 1px; border-bottom: 1px solid #2c3e50; padding-bottom: 10px;\">Proposal Details:</h3>\n    <ul style=\"padding-left: 20px; color: #2c3e50; font-size: 15px; line-height: 1.8;\">\n      <li><strong>Project Title:</strong> {{ doc.project_name }}</li>\n      <li><strong>Project Classification:</strong> {{ doc.project_type or 'Not Specified' }}</li>\n      <li><strong>Current Status:</strong> {{ doc.docstatus == 0 and 'Draft' or doc.docstatus == 1 and 'Submitted' or 'Cancelled' }}</li>\n      <li><strong>Proposed Start Date:</strong> {% if doc.planed_start_date %}{{ frappe.format_date(doc.planed_start_date) }}{% else %}To Be Determined{% endif %}</li>\n      <li><strong>Proposed End Date:</strong> {% if doc.planed_end_date %}{{ frappe.format_date(doc.planed_end_date) }}{% else %}To Be Determined{% endif %}</li>\n    </ul>\n\n    {% if doc.description %}\n    <div style=\"margin-top: 20px;\">\n      <h4 style=\"margin-bottom: 10px; color: #2c3e50; font-weight: normal; letter-spacing: 1px;\">Project Description and Scope:</h4>\n      <p style=\"font-size: 15px; color: #2c3e50; line-height: 1.8; text-align: justify;\">{{ doc.description }}</p>\n    </div>\n    {% endif %}\n  </div>\n\n  <div style=\"margin-top: 30px;\">\n    <h3 style=\"color: #2c3e50; font-weight: normal; letter-spacing: 1px; border-bottom: 1px solid #2c3e50; padding-bottom: 10px;\">Project Manager Contact:</h3>\n    <div style=\"padding: 15px; background-color: #f0f2f5; border: 1px solid #2c3e50; margin-top: 15px;\">\n      <p style=\"font-size: 15px; color: #2c3e50; line-height: 1.8; margin: 0;\">\n        <strong>Email:</strong> projectmanagementfrappe@gmail.com\n      </p>\n      <p style=\"font-size: 15px; color: #2c3e50; line-height: 1.8; margin-top: 10px;\">\n        Should you have any questions regarding your proposal, please contact the project manager directly via the email address provided above.\n      </p>\n    </div>\n  </div>\n\n  <p style=\"font-size: 15px; color: #2c3e50; line-height: 1.8; text-align: justify; margin-top: 30px;\">\n    Our team will review your proposal thoroughly and contact you should additional information be required. You will receive a formal notification regarding the status of your proposal within 5-7 business days.\n  </p>\n\n  <div style=\"margin-top: 40px;\">\n    <p style=\"font-size: 15px; color: #2c3e50; line-height: 1.5; margin-bottom: 5px;\">\n      Best regards,\n    </p>\n    <p style=\"font-size: 15px; color: #2c3e50; line-height: 1.5; margin-top: 0;\">\n      <strong>Project Management Office</strong><br>\n      {{ frappe.get_system_settings(\"project_management\") or \"Project Management Team\" }}\n    </p>\n  </div>\n\n  <div style=\"margin-top: 40px; padding-top: 20px; border-top: 1px solid #2c3e50; text-align: center; color: #5a6268; font-size: 12px; font-style: italic;\">\n    <p>This is an automated notification from the <strong>{{ frappe.get_system_settings(\"app_name\") or \"Project Management System\" }}</strong>.</p>\n    <p>Reference ID: {{ doc.name }}</p>\n  </div>\n</div>",
+ "message_type": "Markdown",
+ "modified": "2025-05-04 13:52:34.597978",
+ "modified_by": "aman@korecent.com",
+ "module": "Project Management",
+ "name": "New Project Proposal",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_document_field": "client_email"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 0,
+ "sender": "Project Management",
+ "sender_email": "projectmanagementfrappe@gmail.com",
+ "subject": "Received Your \"{{doc.project_name}}\" (New Project) Proposal"
+}
