@@ -8,7 +8,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <DashboardCard title="Assigned Tasks" :count="tasks.length" icon="🗂️" />
       <DashboardCard title="Submit a Deliverable⬇️" @click="goToSubmitPage" />
-      <DashboardCard title="Submitted Deliverables" :count="pendingDeliverables.length" icon="📦" />
+      <DashboardCard title="Total Deliverables" :count="pendingDeliverables.length" icon="📦" />
     </div>
 
     <div class="mt-6">
