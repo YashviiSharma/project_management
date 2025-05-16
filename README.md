@@ -1,10 +1,26 @@
-# Project Management App
+<div align="center" markdown="1">
+	<img src=".github/images/project_management.png" width="80" height="80"/>
+	<h1>Project Management Application</h1>
+
+ **A full-stack, modular project management system built on the **Frappe Framework****
+</div>
+
+![Homepage](https://github.com/user-attachments/assets/082c610d-3a64-47e0-af59-a039e09c3781)
+</div>
+<div align="center">
+    <a href="https://one-korecent.frappe.cloud/app/build">Website</a>
+    -
+    <a href="https://drive.google.com/file/d/11l84TMWJiwHBId_ejRz6mBqPUEBi8qQo/view?usp=drivesdk">Demo Video</a>
+</div>
+
+<br>
+<br>
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Built With](https://img.shields.io/badge/Built%20With-Frappe-4B8BBE)
 ![Status](https://img.shields.io/badge/status-In%20Development-yellow)
 
-A full-stack, modular project management system built on the **Frappe Framework**. This application helps organizations efficiently manage complex projects, track deliverables, and coordinate among internal teams, clients, and external vendors — all within a unified, collaborative interface.
+This application helps organizations efficiently manage complex projects, track deliverables, and coordinate among internal teams, clients, and external vendors — all within a unified, collaborative interface.
 
 ---
 
@@ -164,7 +180,39 @@ Built using **Vue.js + Frappe UI**, the portals provide role-specific, secure da
 - Update based on feedback
 ---
 
-## Screenshots & Demos
+## Demo Screenshots
+
+### New Project Creation
+![image](https://github.com/user-attachments/assets/0c96478f-d859-4176-83bc-2a3f2d333bec)
+
+### Task in Progress
+![image](https://github.com/user-attachments/assets/30c1f343-d58f-42ba-8b58-d745e623bf6a)
+
+### Client Portal
+![Dashboard](https://github.com/user-attachments/assets/0d785f4e-13a9-4673-aa26-3336773f7500)
+![My Projects](https://github.com/user-attachments/assets/db0584a2-5419-4f18-afa7-4bcd4e6fc689)
+![Project Description](https://github.com/user-attachments/assets/d59bf7c4-dd8a-4e2b-af4f-76a372611bb1)
+![Deliverables](https://github.com/user-attachments/assets/82e035bb-36e5-4b0d-a1c9-78877052a488)
+![Team Members](https://github.com/user-attachments/assets/e4a51239-9d4d-43c3-af16-4cfe23709447)
+![Invite Guest to Dashboard](https://github.com/user-attachments/assets/587cd707-c33d-4a8c-b2c7-42c3249ba374)
+
+### Project Proposal Web Page for New Project
+![Project Proposal](https://github.com/user-attachments/assets/90404b80-c411-4da7-a2c1-ef517c670c6a)
+
+### Vendor Portal
+![Dashboard](https://github.com/user-attachments/assets/a6f3e259-79ea-4148-910e-f929ef5e4531)
+![Tasks](https://github.com/user-attachments/assets/4752755b-6adf-4385-b3b1-c43e78c650e2)
+![Deliverables](https://github.com/user-attachments/assets/99c20ecb-3b7f-41bd-833a-98db9869d558)
+![Submit Deliveravles](https://github.com/user-attachments/assets/3985316e-51cc-4b05-a6bb-56f735768e89)
+
+### Reports for Project Manager
+![Project Overview](https://github.com/user-attachments/assets/ae877f57-0c50-43c9-9c48-5ae49de424b1)
+![Task Progress Timeline](https://github.com/user-attachments/assets/c169a26c-93d1-418b-be80-bc242baa5fe3)
+![Resource Allocation](https://github.com/user-attachments/assets/11e7e18f-9212-4cbf-b1db-3f56f1315912)
+![Member Timelogs](https://github.com/user-attachments/assets/263d149e-f190-4949-a69d-c4c3bf577934)
+![Task Status](https://github.com/user-attachments/assets/17a53548-912b-42bc-90d6-5849a14afcfd)
+![Deliverable Status](https://github.com/user-attachments/assets/7cbf650a-7ffe-4454-857c-19e574d7a803)
+![Member Workload](https://github.com/user-attachments/assets/a092b9db-99f9-482a-8211-37ad9136987a)
 
 
 ---
@@ -183,4 +231,14 @@ We welcome contributions! Please fork the repository and create a pull request. 
 
 ## Contact
 
-For questions, issues, or feature requests, please open a GitHub issue or contact the maintainer.
+For questions, issues, or feature requests, please open a GitHub issue.
+
+<br>
+<div align="center">
+	<a href="https://frappe.io" target="_blank">
+		<picture>
+			<source media="(prefers-color-scheme: dark)" srcset="https://frappe.io/files/Frappe-white.png">
+			<img src="https://frappe.io/files/Frappe-black.png" alt="Frappe Technologies" height="28"/>
+		</picture>
+	</a>
+</div>
