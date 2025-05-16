@@ -37,16 +37,12 @@ The app is best suited for teams working on milestone-driven projects with deliv
   - Notification system powered by **Raven bots**
   - Alerts for task assignment, status changes, missed deadlines, and more
 
-- **Visualization Tools**
-  - Gantt chart for visualizing project timelines and task dependencies
-  - Heatmap view (proposed) for tracking productivity over time
-
 - **Reporting System**
   - Scheduled reports for daily and weekly status
   - Time logs, task summaries, and project health indicators
 
 - **Role-Based Dashboards**
-  - Custom dashboards based on user type (PM, Team Member, Client, Vendor)
+  - Custom dashboards based on user type (Project Manager, Team Member, Client, Vendor)
 
 ---
 
@@ -57,24 +53,24 @@ The system is built using **Frappe Framework**, leveraging its modular DocType s
 - **Backend**: Python (Frappe Framework)
 - **Frontend**: Vue.js with Frappe UI (for client and vendor portals)
 - **Database**: MariaDB / PostgreSQL (configurable)
-- **Communication**: Raven (Bot + Workspace Integration)
-- **Scheduler**: Frappe Background Jobs + Cron for reports and notifications
+- **Communication**: Raven (Bot + Workspace Integration) $ Mail
+- **Scheduler**: Frappe Background Jobs + Cron for reports and notifications (ongoing)
 
 ---
 
 ## Core Modules (DocTypes)
 
-| Module                | Description                                                                 |
-|-----------------------|-----------------------------------------------------------------------------|
-| `Project`             | Stores project metadata, participants, deadlines, documents, and status     |
-| `Task`                | Tree-structured unit of work with assignee, status, and priority             |
-| `Deliverable`         | Defines project milestones and expected outputs                              |
-| `Deliverable Task`    | Child table under deliverable listing individual tasks                       |
-| `Client Feedback`     | Stores feedback comments, approvals, or rejection by clients                 |
-| `Project Team Member` | Tracks project participants and their role/responsibility                    |
-| `Invite`              | Tracks invites sent to clients or vendors                                   |
-| `User`                | Default Frappe User used to onboard client/vendor (no Desk access enforced)  |
-
+| DocType                    | Description                                                                 |
+|---------------------------|-----------------------------------------------------------------------------|
+| **Project**               | Stores overall project metadata like name, timeline, client, and documents. |
+| **Task**                  | Represents individual units of work, often linked to a deliverable.         |
+| **Deliverable**           | Major milestones or output expectations in the project lifecycle.           |
+| **Deliverable Task**      | Child DocType under Deliverable listing associated tasks.                   |
+| **Team Member**           | Tracks assigned members to a project with their roles.                      |
+| **PM Client Invitation**  | Manages client invitations with tracking for acceptance and status.         |
+| **PM Client Guest Access**| Enables restricted portal access to clients or vendors.                     |
+| **Project Proposal**      | Captures proposals made before project approval and initiation.             |
+| **Task Time Log**         | Logs effort/time spent by team members on specific tasks.                   |
 ---
 
 ## User Personas
@@ -89,7 +85,6 @@ The system is built using **Frappe Framework**, leveraging its modular DocType s
 ### Project Team Member
 - Access dashboard with assigned tasks and timelines
 - Log time and update status
-- View Gantt chart scoped to their own tasks
 - Receive deadline and update notifications
 
 ### Client (External Portal)
@@ -104,7 +99,6 @@ The system is built using **Frappe Framework**, leveraging its modular DocType s
 - Upload deliverables
 - View and respond to feedback
 - Modify deliverables until approved
-- Receive payment after client acceptance (planned)
 
 ---
 
@@ -144,11 +138,12 @@ Raven is Integrated through a open channel button.
 
 | Trigger | Notification |
 |--------|--------------|
-| Task Assigned | Message to assignee |
+| Project Created | Message to all the Members and Client |
+| Task Assigned | Message to Assignee |
 | Task Status Updated | Alert to PM |
-| Deliverable Submitted | Alert to Client |
+| Deliverable Sent for Approval | Alert to Client |
+| Deliverable Submitted | Response to the Assigne |
 | Feedback Added | Notification to assigned vendor/team |
-| Deliverable Approved | Confirmation to vendor/team |
 
 
 ---
