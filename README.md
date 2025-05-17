@@ -146,6 +146,8 @@ The system is built using **Frappe Framework**, leveraging its modular DocType s
 ## Raven Bot Integration
 
 Raven is Integrated through a open channel button.
+![image](https://github.com/user-attachments/assets/87eb3fd1-8f5a-4649-ae76-8d3d3a43ac7f)
+![image](https://github.com/user-attachments/assets/8bd84f8a-5a84-44c0-bc7e-a98549ce4510)
 
 ---
 
@@ -188,6 +190,7 @@ Built using **Vue.js + Frappe UI**, the portals provide role-specific, secure da
 ### Task in Progress
 ![image](https://github.com/user-attachments/assets/30c1f343-d58f-42ba-8b58-d745e623bf6a)
 
+
 ### Client Portal
 ![Dashboard](https://github.com/user-attachments/assets/0d785f4e-13a9-4673-aa26-3336773f7500)
 ![My Projects](https://github.com/user-attachments/assets/db0584a2-5419-4f18-afa7-4bcd4e6fc689)
@@ -203,7 +206,15 @@ Built using **Vue.js + Frappe UI**, the portals provide role-specific, secure da
 ![Dashboard](https://github.com/user-attachments/assets/a6f3e259-79ea-4148-910e-f929ef5e4531)
 ![Tasks](https://github.com/user-attachments/assets/4752755b-6adf-4385-b3b1-c43e78c650e2)
 ![Deliverables](https://github.com/user-attachments/assets/99c20ecb-3b7f-41bd-833a-98db9869d558)
-![Submit Deliveravles](https://github.com/user-attachments/assets/3985316e-51cc-4b05-a6bb-56f735768e89)
+![image](https://github.com/user-attachments/assets/bf1ffcea-7c8f-4d04-a34e-c5cb2b6d9ec8)
+![image](https://github.com/user-attachments/assets/e164c610-8639-41b3-98e7-f9a162433f75)
+![image](https://github.com/user-attachments/assets/4786672a-bb9f-4e40-8a7e-4c450ff6df9b)
+- Workflow state changed after submission
+![image](https://github.com/user-attachments/assets/0b8ba02f-2d4c-4c6b-8107-c25101481835)
+
+
+### Project Manager Workspace with all the stats 
+![image](https://github.com/user-attachments/assets/00cd4ea3-7fa5-455a-b334-8d096deb995e)
 
 ### Reports for Project Manager
 ![Project Overview](https://github.com/user-attachments/assets/ae877f57-0c50-43c9-9c48-5ae49de424b1)
@@ -214,6 +225,14 @@ Built using **Vue.js + Frappe UI**, the portals provide role-specific, secure da
 ![Deliverable Status](https://github.com/user-attachments/assets/7cbf650a-7ffe-4454-857c-19e574d7a803)
 ![Member Workload](https://github.com/user-attachments/assets/a092b9db-99f9-482a-8211-37ad9136987a)
 
+
+### Project Team Member Dashboard
+![image](https://github.com/user-attachments/assets/105e5ed4-5b23-487d-8117-202fcbbe4e8b)
+![image](https://github.com/user-attachments/assets/d75bf1cd-c2f6-4e8e-8991-b42a999a3eea)
+![image](https://github.com/user-attachments/assets/ed070bae-f776-4dea-91af-9390b4be3e6e)
+![image](https://github.com/user-attachments/assets/fc8584f5-f2ef-4b71-a790-01ac8295eae2)
+![image](https://github.com/user-attachments/assets/a8abf480-5b2c-4515-b7e6-a4c01827c826)
+![image](https://github.com/user-attachments/assets/c488d1aa-7fe1-4772-a1e1-9b09d8663584)
 
 ---
 
