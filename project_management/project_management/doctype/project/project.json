@@ -52,8 +52,9 @@
   },
   {
    "fieldname": "project_type",
-   "fieldtype": "Data",
-   "label": "Project Type"
+   "fieldtype": "Link",
+   "label": "Project Type",
+   "options": "Project Type"
   },
   {
    "default": "Medium",
@@ -136,8 +137,10 @@
   {
    "fieldname": "raven_channel",
    "fieldtype": "Link",
+   "ignore_user_permissions": 1,
    "label": "Raven Channel",
-   "options": "Raven Channel"
+   "options": "Raven Channel",
+   "read_only": 1
   },
   {
    "fieldname": "progress_",
@@ -158,7 +161,7 @@
    "link_fieldname": "project"
   }
  ],
- "modified": "2025-05-04 21:05:06.969518",
+ "modified": "2025-05-17 14:06:19.913033",
  "modified_by": "Administrator",
  "module": "Project Management",
  "name": "Project",
